@@ -1,0 +1,1213 @@
+<!-- index.html for BellRinging project -->
+
+<!DOCTYPE html>
+
+<?php session_start(); ?>
+
+<html>
+
+
+<style type="text/css">
+
+  .error    /* This is the jQuery Validate() class for error messages  */
+  {
+    color: #CC0000;
+    font-size: small;
+    padding-left: 3px;
+    text-align: : left;
+  }
+
+    /* got from website http://jsfiddle.net/HC64Y/11/ */
+  input.rounded2
+  {
+      border: 1px solid #ccc;
+      -moz-border-radius: 10px;
+      -webkit-border-radius: 10px;
+      border-radius: 10px;
+      -moz-box-shadow: 2px 2px 3px #666;
+      -webkit-box-shadow: 2px 2px 3px #666;
+      box-shadow: 2px 2px 3px #666;
+      font-size: 20px;
+      padding: 4px 7px;
+      outline: 0;
+      -webkit-appearance: none;
+  	  display: inline-block;
+      width: 250px;
+  }
+
+  label {
+      text-align:right;
+      padding-right:20px;
+      display:inline-block;
+      min-width:200px;
+  }
+
+  .calendarTableLbl
+  {
+    border-style: solid;
+    border-color: #B4886B;
+    font-weight: bold;
+    display: block;
+    width: 120px;
+    height: 25px;
+    text-align: center;
+    color: green;
+  }
+
+.calendarTableLblRed
+  {
+    border-style: solid;
+    border-color: #B4886B;
+    font-weight: bold;
+    display: block;
+    width: 120px;
+    height: 25px;
+    text-align: center;
+    color: red;
+  }
+
+.calendarClass tbody tr:hover
+{
+    background-color: lightgrey;
+}
+
+#header{
+    position:fixed;
+    top:0; left:0;
+    padding : 3px;
+    height:40px;
+    width:100%;
+    background-color: #339999;
+    color: white;
+    z-index:999;
+}
+
+#header a{
+  color:white;
+}
+
+#header span {
+  color: white;
+}
+
+.infoCursor {
+    cursor: help;
+}
+
+
+</style>
+
+<head>
+
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.0.5/css/tooltipster.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.0.5/css/themes/tooltipster-shadow.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.0.5/css/themes/tooltipster-punk.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.0.5/css/themes/tooltipster-noir.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.0.5/css/themes/tooltipster-light.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/jquery.datepick.css" />
+
+    <title>Monument Hill Kiwanis Bell Ringing</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/additional-methods.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.0.5/js/jquery.tooltipster.min.js"></script>
+    <script type="text/javascript" src="https://cloud.github.com/downloads/digitalBush/jquery.maskedinput/jquery.maskedinput-1.3.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+    <script type="text/javascript" src="js/jquery.plugin.js"></script>
+    <script type="text/javascript" src="js/jquery.datepick.min.js"></script>
+    <script type="text/javascript" src="js/jquery.mask.min.js"></script>
+
+      <script>
+      // var confirm_ret;  // used to get result of confirm jQuery dialog
+
+      $(initialize);
+
+      function initialize()
+      {
+          initializeToolTips();
+          setAccordion(); // Sets up the basic page as a jQuery Accordion
+          setRegisterValidate(); // Sets up validation for the "registration" form
+          setSignInValidate(); // Sets up validation for the "Sign In" form
+          setForgotPasswordValidate(); // Sets up validation for " Forgot Password form"
+          setChangePasswordFormValidate();
+          setNewPwdValidate(); // sets up validation for the new password dialog
+          setDialogs(); // Sets up the Sign In and Registration forms as dialogs
+          setShowCalendarTrigger(); // Sets the "click" event for the "Show Calendar" anchor  to the showCalander() function
+          $("#phone").mask("000-000-0000")
+
+          $("#helpButton").click(function()
+              {
+                  window.open('help/help.html', 'Help', 'height=900,width=1300, location=0, scrollbars=1');
+              }
+          );
+          $("#showScheduleButton").click(function()
+            {
+                showFullSchedule();
+            }
+          );
+          $("#bellringingCalendar").hide(1); // Don't want the "Show Calendar" link to show until after successful sign in
+          $("#allDaysSpan").hide(1);
+          $("#enterResetCodeDiv").hide(1);
+          $("#showSchedule").hide(1);
+          theCookie = $.cookie("MHKBR");
+          if (typeof(theCookie) != "undefined")
+          {
+              obj = JSON.parse(theCookie);
+              data = "emailSignIn=" + obj.username + "&pwdSignIn=" + obj.password + "&signIn=Sign+In&do_not_delete_cookie=true"
+              $.post("signin.php", data, signInResult); //calls the signInResult() function after success
+          }
+
+      }         // end "initialize()"
+
+
+
+      function showFullSchedule()
+      {
+        formData = $("#hiddenForm").serialize();
+        window.open('showFullSchedule.php?' + formData, 'Full Schedule', 'height=900,width=1300, location=0, scrollbars=1, menubar=1, titlebar=1, toolbar=1');
+      }
+
+      function setDialogs() // Sets a number of dialogs and triggers (click events)
+      {
+          $("#enrollDialog").dialog(
+              {
+              modal: true, autoOpen: false, minWidth: 800, title: "Enroll",
+              close: function()
+                  {
+                      $("#registerResult").html("");
+                      $("#fname").val("");
+                      $("#lname").val("");
+                      $("#email").val("");
+                      $("#email2").val("");
+                      $("#phone").val("");
+                      $("#pwd").val("");
+                      $("#pwd2").val("");
+                  }
+                  ,
+              open: function()
+                  {
+                      $("#signInDialog").dialog("close"); // just in case it's open
+                  }
+              }
+          );
+
+          $("#enrollTrigger").click(function()
+              {
+                  $("#enrollDialog").dialog("open");
+              }
+          );
+
+          $("#signOutTrigger").click(signOut);
+
+          $("#signInDialog").dialog(
+              {
+              modal: true, autoOpen: false, minWidth: 800, title: "Sign In",
+              close: function(event, ui)
+                  {
+                      $("#emailSignIn").val("");
+                      $("#pwdSignIn").val("");
+                  }
+              }
+          );
+
+          // putting #enrollDialog->close in the #signInDialog definition did not work (even though it does work
+          // in the #enrollDialog definition), hence we use the command below which does work
+          $("#signInDialog").on("dialogopen", function(event, ui)
+              {
+                  $("#enrollDialog").dialog("close")
+              }
+          );
+
+          $("#messageDialog").dialog(
+              {
+              title: "Message", modal: true, autoOpen: false, minWidth: 400, position:
+                  {
+                  my: "center", at: "center", of: window
+                  }
+                  ,
+              buttons:
+                  {
+                  "Close": function()
+                      {
+                          $(this).dialog("close");
+                      }
+                  }
+              }
+          );
+
+          $("#confirmDialogForInsert").dialog(
+              {
+              autoOpen: false, minWidth: 400, modal: true, title: "Register",
+              buttons:
+                  {
+                  "Yes": function()
+                      {
+                          confirm_ret = true;
+                          $(this).dialog("close");
+                          do_insert();
+                      }
+                      ,
+                  "No": function()
+                      {
+                          confirm_ret = false;
+                          $(this).dialog("close");
+                      }
+                  }
+              }
+          )
+
+          $("#confirmDialogForRemove").dialog(
+              {
+              autoOpen: false, minWidth: 400, modal: true, title: "Remove",
+              buttons:
+                  {
+                  "Yes": function()
+                      {
+                          confirm_ret = true;
+                          $(this).dialog("close");
+                          do_remove();
+                      }
+                      ,
+                  "No": function()
+                      {
+                          confirm_ret = false;
+                          $(this).dialog("close");
+                      }
+                  }
+              }
+          )
+
+          $("#forgotPasswordDialog").dialog(
+              {
+              modal: true, autoOpen: false, minWidth: 800, title: "Reset Password",
+              close: function(event, ui)
+                  {
+                      $("#enterResetCodeDiv").hide(1);
+                      $("#forgotPasswordResultMsg").hide(1);
+                  }
+                  ,
+              open: function(event, ui)
+                  {
+                      $("#forgotPasswordEmailInput").val("");
+                      $("#changePasswordIdCode").val("");
+                  }
+              }
+          );
+
+          $("#forgotPasswordTrigger").click(function()
+              {
+                  $("#signInDialog").dialog("close");
+                  $("#ajaxLoaderGif").hide(1);
+                  $("#forgotPasswordDialog").dialog("open");
+              }
+          );
+
+          $("#signInTrigger").click(function()
+              {
+                  $("#signInDialog").dialog(
+                      {
+                      modal: true, open: function(event, ui)
+                          {
+                              $("#signInResultNG").html("");
+                              $("#pwdSignIn").val("");
+                          }
+                      }
+                  );
+                  $("#signInDialog").dialog("open");
+
+              }
+          );
+
+          $("#setNewPasswordDialog").dialog(
+              {
+              modal: true, autoOpen: false, minWidth: 800, title: "New Password",
+              open: function(event, ui)
+                  {
+                      $("#setNewPwd1").val("");
+                      $("#setNewPwd2").val("");
+                  }
+              }
+          );
+
+          $("#swapDialog").dialog(
+              {
+              modal: true, autoOpen: false, minWidth: 600, minHeight: 500, closeText: "Cancel", title: "Swap Timeslots",
+              buttons:
+                  {
+                  "Submit": function()
+                      {
+                          $("#swapForm").submit();
+                      },
+                  "Close": function()
+                      {
+                          $(this).dialog("close");
+                      }
+                  }
+
+              }
+          );
+      };
+
+      function initializeToolTips()
+      {
+          //$('.tooltip').tooltipster();  // get ready to use tooltips
+          $('#enrollTrigger').tooltipster(
+              {
+              content: $('<span><strong>Click this link to enroll</strong><br/><hr/>You only need to enroll once.</span>')
+              }
+          );
+          $('#signInTrigger').tooltipster(
+              {
+              content: $('<span><strong>Click this link to sign in (after enrolling)</strong><br/><hr/>You must sign in with your email and password</span>')
+              }
+          );
+          $('#bellringingCalendar').tooltipster(
+              {
+              content: $('<span><strong>Click this link to refresh the calendar</strong><br/><hr/>You&lsquo;ll' +
+                      ' want to do this if the calendar has been left open for a<br/>' +
+                      'while to check to see if somebody else has selected a timeslot </span>')
+              }
+          );
+          $('#signOutTrigger').tooltipster(
+              {
+              content: $('<span><string>Click this link to sign out</strong><br/><hr/>Signing out is not necessary.' +
+                      '<br/>You can just close your browser.<br/>However if somebody else in your family ' +
+                      '<br/>wants to sign in then use this link.</span>')
+              }
+          );
+          $('#allDaysSpan').tooltipster(
+              {
+              content: $('<span><strong>Check this checkbox to show all days in the project</strong><br/><hr/>' +
+                      'By default the calendar only displays current and future days.<br/>' +
+                      'By checking this box and clicking on the &ldquo;Refresh calendar&rdquo; link' +
+                      '<br/>all days will be displayed. However you can only change schedules<br/>' +
+                      'for the current and future days.</span>')
+              }
+          );
+          $('#signInInfoImg').tooltipster(
+              {
+              content: $('<span><strong>Sign In</strong><br/><hr/>' +
+                      'Enter your email address and your password<br/>' +
+                      'and click on the &ldquo;Sign In&rdquo;<br/>' +
+                      'button. If you forgot your password<br/>' +
+                      'click on the &ldquo;Forgot Password&rdquo;' +
+                      'link.</span>')
+              }
+          );
+          $('#forgotPasswordInfo').tooltipster(
+              {
+              content: $('<span><strong>Forgot Password</strong><br/><hr/>' +
+                      'Enter your email address and ' +
+                      'click on the &ldquo;Reset Password&rdquo;<br/>' +
+                      'button. You will be sent an email with a code<br/>' +
+                      'which you must enter in a subsequent screen.<br/>' +
+                      'Another box will be displayed where you enter<br/>' +
+                      'your new password. You have 5 minutes to<br/>' +
+                      'complete this otherwise you will have to<br/>' +
+                      'repeat the process.</span>')
+              }
+          );
+          $('#generalInfo').tooltipster(
+              {
+              content: $('<span><strong>How to Schedule a Timeslot</strong><br/><hr/>' +
+                      'After signing in a table of timeslots will be<br/>' +
+                      'displayed. Click on an empty timeslot and confirm that<br/>' +
+                      'you want to select this slot. Your name will appear<br/>' +
+                      'in that position.<br/><br/>' +
+                      'If you want to remove your name from a scheduled<br/>' +
+                      'time, click on your name and confirm your action.<br/><br/>' +
+                      'Note that you can&acute;t select a timeslot if somebody<br/>' +
+                      'else has selected it nor can you select a timeslot if<br/>' +
+                      'you have already selected a timeslot at the same time in<br/>' +
+                      'another location.<br/><br/>' +
+                     // 'If you wish to swap schedules with a person, click on<br/>' +
+                     // 'the <img src="images/swap_icon.png" height="25px" width="25px" alt="" /> icon&nbsp;' +
+                     // 'next to that person and then select<br/>' +
+                     // 'your timeslot you wish to swap.<br/><br/>' +
+                      'If the schedule display has been opened for a while<br/>' +
+                      'it&acute;s a good idea to refresh the calendar to make sure<br/>' +
+                      'that nobody has selected a timeslot while you&acute;ve<br/>' +
+                      'had the table opened.</span>')
+              }
+          );
+          $('#enrollInfo').tooltipster(
+              {
+              content: $('<span><strong>Enrolling</strong><br/><hr/>' +
+                      'All fields are required<br/>' +
+                      '<ul>' +
+                      '<li>First &amp; Last Name - Display purposes only</li>' +
+                      '<li>Email - Will be used as login id and to send reminders</li>' +
+                      '<li> Password - must be six or more characters with<br/>at least one letter and one number</li>' +
+                      '<li>Passwords are CASE SENSITIVE</li>' +
+                      '</ul>' +
+                      '<br/>' +
+                      'You will be asked to confirm both your email and password<br/>' +
+                      'in the boxes below &ldquo;Email&rdquo; and &ldquo;Password&rdquo;<br/>' +
+                      '</span>')
+              }
+          );
+
+          $('#forgotPasswordTrigger').tooltipster(
+              {
+              content: $('<span><strong>Password Reset</strong><br/><hr/>' +
+                      'If you forget your password you may<br/>' +
+                      'reset it by clicking on this &ldquo;Forgot<br/>' +
+                      'Password&rdquo; link. You will be required<br/>' +
+                      'to enter your email address and a message will<br/>' +
+                      'be sent to you with a code. You must enter the<br/>' +
+                      'code in a subsequent screen within 5 minutes<br/>' +
+                      'and then you will be prompted for a new password.' +
+                      '</span>')
+              }
+          );
+
+          $('#enrollPwdInfo ').tooltipster(
+              {
+              content: $('<span><strong>Password Requirements</strong><br/><hr/>' +
+                      '<ul>' +
+                      '<li>Must be a minimum of six (6) characters</li>' +
+                      '<li>May not contain spaces</li>' +
+                      '<li>Must have at least one (1) letter<br/>and one (1) number</li>' +
+                      '<li>Passwords are CASE SENSITIVE</li>' +
+                      '</ul>' +
+                      '</span>')
+              }
+          )
+      }
+
+      function signOut()
+      {
+          $("#signInTrigger").show(1);
+          $("#signOutTrigger").hide(1);
+          $("#signInInfo").hide(1);
+          $("#bellringingCalendar").hide(1);
+          $("#allDaysSpan").hide(1);
+          $("#calendarDiv").html("");
+          $("#accordion").accordion(
+              {
+              active: false
+              }
+          );
+          $("#signInFirstWarning").show(1);
+          $("#enterResetCodeDiv").hide(1);
+          $("#enrollTrigger").show(1);
+          $("#showSchedule").hide(1);
+      }
+
+      function setAccordion() // Sets up the two accordion panes
+      {
+          $("#accordion").accordion(
+              {
+              collapsible: true,
+              active: false,
+              heightStyle: "content",
+              animate: false,
+              active: 0
+              }
+          );
+      }
+
+      function setSignInValidate() // jQuery validation for the "Sign In" form
+      {
+          $("#signInForm").validate(
+              {
+              rules:
+                  {
+                  emailSignIn:
+                      {
+                      required: true,
+                      email: true
+                      }
+                      ,
+                  pwdSignIn:
+                      {
+                      required: true
+                      }
+                  }
+                  ,
+              errorPlacement: function(error, element)
+                  {
+                      error.insertAfter(element);
+                  }
+                  ,
+              submitHandler: function(form)
+                  {
+                      var formData = $("#signInForm").serialize();
+                      $.post("signin.php", formData, signInResult); //calls the signInResult() function after success
+                  }
+              }
+          )
+      };
+
+
+      function setNewPwdValidate() // This form requires the new password after a "forgot"
+      {
+          $("#setNewPasswordForm").validate(
+              {
+              rules:
+                  {
+                  setNewPwd1:
+                      {
+                      required: true, minlength: 6, nowhitespace: true, pattern: /^(?=.*\d)(?=.*[A-Za-z]).{6,}$/
+                      } ,
+                  setNewPwd2:
+                      {
+                      equalTo: "#setNewPwd1"
+                      }
+                  } ,
+              messages:
+                  {
+                  setNewPwd1:
+                      {
+                      pattern: "Password must be at least 6 characters with at least one letter and 1 digit"
+                      }
+                  } ,
+              errorPlacement: function(error, element)
+                  {
+                      error.insertAfter(element);
+                  } ,
+              submitHandler: function(form)
+                  {
+                      var cpc = "forgotPasswordEmailInput=" + $("#forgotPasswordEmailInput").val();
+                      cpc += "&" + "changePasswordIdCode=" + $("#changePasswordIdCode").val();
+                      cpc += "&" + "newPassword=" + $("#setNewPwd1").val();
+
+                      $.post("dopasswordreset.php", cpc, passwordResetResult);
+                  }
+              }
+          )
+      };
+
+
+      function passwordResetResult(data, status)
+      {
+          $("#setNewPasswordDialog").dialog("close");
+          $("#messageDialog").html(data);
+          $("#messageDialog").dialog("open");
+      }
+
+      function setChangePasswordFormValidate()
+      {
+          $("#changePasswordForm").validate(
+              {
+              rules:
+                  {
+                  changePasswordIdCode:
+                      {
+                      required: true
+                      }
+                  }
+                  ,
+              errorPlacement: function(error, element)
+                  {
+                      error.appendTo("#changePasswordFormErrorMsg");
+                      //error.insertAfter(element);
+                  }
+                  ,
+              submitHandler: function(form)
+                  {
+                      var cpc = "forgotPasswordEmailInput=" + $("#forgotPasswordEmailInput").val();
+                      cpc += "&" + "changePasswordIdCode=" + $("#changePasswordIdCode").val();
+                      $.post("testresetpasswordcode.php", cpc, showPasswordResetForm);
+                  }
+              }
+          )
+      };
+
+
+      function showPasswordResetForm(data, status)
+      {
+          if (data.substr(0, 5) == "Valid")
+          {
+              $("#forgotPasswordDialog").dialog("close");
+              $("#setNewPasswordDialog").dialog("open");
+          }
+          else
+          {
+              $("#messageDialog").html("Invalid Email/Reset Code");
+              $("#messageDialog").dialog("open");
+          }
+      }
+
+      function setRegisterValidate() // jQuery validation for the "Registration" form
+      {
+          $("#registerForm").validate(
+              {
+              rules:
+                  {
+                  fname:
+                      {
+                      required: true
+                      }
+                      ,
+                  lname:
+                      {
+                      required: true
+                      }
+                      ,
+                  email:
+                      {
+                      required: true,
+                      email: true
+                      }
+                      ,
+                  email2:
+                      {
+                      equalTo: "#email"
+                      }
+                      ,
+                  phone:
+                      {
+                      required: true,
+                      phoneUS: true
+                      }
+                      ,
+                  pwd:
+                      {
+                      required: true,
+                      minlength: 6,
+                      nowhitespace: true,
+                      pattern: /^(?=.*\d)(?=.*[A-Za-z]).{6,}$/
+                      }
+                      ,
+                  pwd2:
+                      {
+                      equalTo: "#pwd"
+                      }
+                  }
+                  ,
+              messages:
+                  {
+                  pwd:
+                      {
+                      pattern: "Password must at least 6 characters with at least one letter and one digit"
+                      }
+                  }
+                  ,
+
+              errorPlacement: function(error, element)
+                  {
+                      error.insertAfter(element);
+                  }
+                  ,
+              submitHandler: function(form)
+                  {
+                      // form.submit();
+                      var formData = $("#registerForm").serialize();
+                      $.post("register.php", formData, registerResult); // Calls the registerResult() function after success
+                  }
+              }
+          )
+      };
+
+
+      function registerResult(data, status)
+      {
+          // $("#registerResult").html(data);
+          if (data.substr(0, 1) == 'R') // If registration successful then register.php returns "Registration successful" meaasage
+          {
+              // so check if first character is "R"
+              $("#registerResult").html('<p style="color:blue;">' + data + '<p>');
+          }
+          else
+          {
+              $("#registerResult").html('<p style="color:red;">' + data + '<p>'); // If registration not successful then returns "Emails address <xxx> in use
+          }
+      }
+
+      function setForgotPasswordValidate()
+      {
+          $("#forgotPasswordForm").validate(
+              {
+              rules:
+                  {
+                  forgotPasswordEmailInput:
+                      {
+                      required: true,
+                      email: true
+                      }
+                  }
+                  ,
+              errorPlacement: function(error, element)
+                  {
+                      error.insertAfter(element);
+                  }
+                  ,
+              submitHandler: function(form)
+                  {
+                      $("#enterResetCodeDiv").hide(1);
+                      $("#forgotPasswordResultMsg").html("");
+                      var formData = $("#forgotPasswordForm").serialize();
+                      $.post("passwordreset.php", formData, forgotPasswordResult);
+                      $("#ajaxLoaderGif").show(1);
+                  }
+              }
+          )
+      };
+
+
+      function forgotPasswordResult(data, status)
+      {
+          $("#ajaxLoaderGif").hide(1);
+          if (data.substr(0, 5) == "Email") // if forgotpassword.php echos "Email ..." as first word then email was not found in database so do nothing
+          {
+              $("#enterResetCodeDiv").hide(1);
+              $("#forgotPasswordResultMsg").html(data);
+          }
+          else
+          {
+              // code to process reset goes here
+              $("#enterResetCodeDiv").show(1);
+          }
+      }
+
+      function changePwd()
+      {
+          $("#forgotPasswordDialog").dialog("close");
+          $("#setNewPasswordDialog").dialog("open");
+      }
+
+      function signInResult(data, status)
+      {
+          var str = data.substr(0, 7);
+          if (str != "Invalid")
+          {
+              // Sign in was good so:
+              // - close the dialog
+              // - show name and email on top of page
+              // - put the user id in the "rgr" div for later use in showCalander()
+              // - Hide the "Sign in first" warning
+              // - show the "Show Calander link on the top of the page
+              var rg = eval("(" + data + ")");
+              $("#signInDialog").dialog("close");
+              var admin;
+              if (rg.Ringer[0].administrator == "1")
+                  admin = "A";
+              else
+                  admin = "";
+              $("#admin").html(admin);
+              $("#signInInfo").html("Signed in as: " + rg.Ringer[0].fname + " " + rg.Ringer[0].lname + " " + rg.Ringer[0].email + " " + admin);
+              $("#rgrid").attr("value", rg.Ringer[0].id);
+              $("#bellringingCalendar").show(1);
+              $("#allDaysSpan").show(1);
+              $("#signInFirstWarning").hide(1);
+              $("#signOutTrigger").show(1);
+              $("#signInTrigger").hide(1);
+              $("#signInInfo").show(1);
+              $("#enrollTrigger").hide(1);
+              $("#showSchedule").show(1);
+              showCalendar();
+          }
+          else // if sign in not successful then show message in dialog box
+          {
+              $("#signInResultNG").html(data);
+          }
+      }
+
+      function setShowCalendarTrigger() // when Show Calendar link is clicked call showCalander() function
+      {
+          $("#bellringingCalendar").click(function()
+              {
+                  showCalendar();
+              }
+          )
+      }
+
+      function showCalendar() // serialize data in the form with id = hiddenForm (contains the ringer id populated by signInResult()
+      {
+          // and passes it to the PHP script "showcalendar.php"
+          var rgrid;
+          if ($("#allDaysCheckBox").is(':checked'))
+          {
+              chk = "All";
+          }
+          else
+          {
+              chk = "None";
+          }
+          //rgrid = document.getElementById("rgrid").getAttribute("value"); // need javascript - jQuery doesn't work
+          formData = $("#hiddenForm").serialize();
+          formData = formData + "&allDays=" +chk;
+          $.post("showcalendar.php", formData, printCalendar);
+      }
+
+      function setTipsterForCalendar()
+      {
+          $('.tableHelp').tooltipster(
+              {
+              content: $('<span><strong>Scheduling</strong><br/><hr/>' +
+                      '<ul>' +
+                      '<li>Click on an empty timeslot<br/>to schedule yourself for that slot.</li>' +
+                      '<li>Click on a timeslot with your ' +
+                      'name to remove<br/>yourself from the schedule.</li>' +
+                   //   '<li>Click on the <img src="images/swap_icon.png" height="25px" width="25px" alt="" /> icon next to<br/>' +
+                  //    'a person to swap with that person</li>'  +
+                      '</span>')
+              }
+          )
+      }
+
+      function printCalendar(data, status) // called after success of showcalendar.php and will populate calendarDiv with results
+      {
+          $("#accordion").accordion(
+              {
+              active: 0
+              }
+          ); // open the first accordion panel
+          $("#calendarDiv").html(data);
+          $("#calendarTableId input").addClass("rounded2");
+          $("#calendarTableId").addClass("calendarClass");
+          $(".calendarTableLbl").click(processCalendarClick);
+          $(".swapIcon").click(setSwapDialog);
+          setTipsterForCalendar();
+      }
+
+      function setSwapDialog()
+      {
+          var str = $(this).attr("code");
+          $.post("swap.php", "code=" + str, showSwapDialog);
+      }
+
+      function showSwapDialog(data, status)
+      {
+          str = data.split("@@@!!!@@@");
+          $("#swapDialogTopMessage").html(str[0]);
+          $("#swapFormDiv").html(str[1]);
+          $("#swapDate").datepick(
+              {
+                  dateFormat: "D MM d, yyyy'",
+                  minDate: 0,
+                  autoSize: true,
+                  showOptions: "",
+                  showAnim: "",
+                  changeMonth: true,
+                  showTrigger: '<button type="button" class="trigger">' +
+                         '<img src="images/calendar-blue.gif" alt="Select Date"></button>'
+                /* minDate: new Date(), constrainInput: true, dateFormat: "M d, yy",
+                 showOn: "button",
+                 buttonImage: "images/calendar.gif",
+                 buttonImageOnly: true,
+                 buttonText: "Select date" */
+              }
+          );
+          setSwapDialogValidation();
+          $("#swapDialogBottomMessage").html("");
+          $("#swapDialog").dialog("open");
+
+      }
+
+      function setSwapDialogValidation()
+      {
+          $("#swapForm").validate(
+              {
+              rules:
+                  {
+                  swapSlot:
+                      {
+                      required: true
+                      }
+                      ,
+                  swapLocation:
+                      {
+                      required: true
+                      }
+                      ,
+                  swapDate:
+                      {
+                      required: true,
+                      date: true
+                      }
+                  },
+              messages:
+              {
+                  swapSlot: "Please select a timeslot",
+                  swapLocation: "Please select a location",
+                  swapDate:
+                  {
+                     date: "Date is not valid",
+                     required: "Please select a date"
+                  }
+              },
+              errorContainer: "#errorContainer",
+              errorLabelContainer: "#errorContainer",
+              errorElement: "li",
+              submitHandler: function() {submitSwapForm(); }
+              }
+          )
+      }
+
+      function submitSwapForm()
+      {
+         str = $("#swapForm").serialize();
+         $.post("do_swap.php", str, processSwap);
+      }
+
+      function processSwap(data, status)
+      {
+          $("#swapDialogBottomMessage").html(data);
+      }
+
+      function processCalendarClick()
+      {
+          var str = $(this).attr("code");
+          $.post("change_schedule.php", "code=" + str, test_result)
+      }
+
+      function test_result(data, status) // called when user clicks on a calander box. Appropriate code returned by ProcessCalendarClick
+      {
+          var rslt = data.split("#");
+          var msg = rslt[1];
+          var ret_cd = rslt[0];
+          var cd_str = rslt[2];
+          switch (ret_cd) // 0 = removal, 1 = slot occupied, 2 = allowable insert, 3 = user already in timeslot
+          {
+              // 4 = tried to schedule or change a day in the past, 5 = sql error
+              case "0":
+                  $("#cd_str").html(cd_str);
+                  $("#confirmDialogForRemove").html(msg);
+                  $("#confirmDialogForRemove").dialog("open");
+                  break;
+
+              case "1":
+                  $("#messageDialog").html(msg);
+                  $("#messageDialog").dialog("open");
+                  break;
+
+              case "2":
+                  $("#cd_str").html(cd_str);
+                  $("#confirmDialogForInsert").html(msg);
+                  $("#confirmDialogForInsert").dialog("open");
+                  /* if (confirm(msg) == true)
+            $.ajax({
+              type: 'POST',
+              url: 'do_insert.php',
+              data: "code=" + cd_str,
+              success: insert_result,
+              async: false
+              });*/
+
+                  break;
+
+              case "3":
+                  $("#messageDialog").html(msg);
+                  $("#messageDialog").dialog("open");
+                  break;
+
+              case "4":
+                  $("#messageDialog").html(msg);
+                  $("#messageDialog").dialog("open");
+                  break;
+
+              case "5":
+                  $("#messageDialog").html(msg);
+                  $("#messageDialog").dialog("open");
+                  break;
+          }
+      }
+
+      function do_remove()
+      {
+          $.post("do_remove.php", "code=" + $("#cd_str").html(), remove_result);
+      }
+
+      function do_insert()
+      {
+          $.ajax(
+              {
+              type: 'POST',
+              url: 'do_insert.php',
+              data: "code=" + $("#cd_str").html(), //cd_str,
+              success: insert_result,
+              async: false
+              }
+          );
+      }
+
+      function remove_result(data, status)
+      {
+          showCalendar();
+          $("#messageDialog").html(data);
+          $("#messageDialog").dialog("open");
+      }
+
+      function insert_result(data, status)
+      {
+          showCalendar();
+          $("#messageDialog").html(data);
+          $("#messageDialog").dialog("open");
+      }
+
+      function togglepwdSignIn() {
+        var x = document.getElementById("pwdSignIn");
+        if (x.type === "password") {
+            x.type = "text";
+         } else {
+            x.type = "password";
+        }
+      }
+
+      function toggleRegisterPasswords() {
+        var x = document.getElementById("pwd");
+        if (x.type === "password") {
+            x.type = "text";
+         } else {
+            x.type = "password";
+        }
+        var x = document.getElementById("pwd2");
+        if (x.type === "password") {
+            x.type = "text";
+         } else {
+            x.type = "password";
+        }
+      }
+
+
+      </script>
+
+</head>
+
+<body>
+    <!--<button id="enrollTrigger">Enroll</button> &nbsp; &nbsp; &nbsp;<button id="signInTrigger">Sign In</button>   -->
+    <div id="header">
+      <a href="#" target="_self" id="enrollTrigger" style="margin-left: 10px;">Enroll&nbsp;&nbsp;<img src="images/Help-icon.png" alt="?" class="infoCursor" height="25px" width="25px"  /></a>
+      &nbsp; &nbsp; &nbsp;<a href="#" target="_self" id="signInTrigger">Sign In&nbsp;&nbsp;<img src="images/Help-icon.png" alt="?" class="infoCursor" height="25px" width="25px"  /></a>
+      &nbsp; &nbsp; &nbsp;<a href="#" target="_self" id="signOutTrigger" style="display:none">Sign out&nbsp;&nbsp;<img src="images/Help-icon.png" alt="?" class="infoCursor" height="25px" width="25px"  /></a>
+      &nbsp; &nbsp; &nbsp;<a href="#" target ="_self" id="bellringingCalendar" style="display: none;">Refresh calendar&nbsp;&nbsp;<img src="images/Help-icon.png" alt="?" class="infoCursor" height="25px" width="25px"  /></a>
+      &nbsp;&nbsp;
+      <span id="allDaysSpan" class="infoCursor">All Dates&nbsp;&nbsp;<img src="images/Help-icon.png" alt="?" class="infoCursor" height="25px" width="25px"  /><input type="checkbox" id="allDaysCheckBox" style="margin-top: 5px;"/></span>
+      &nbsp; &nbsp; &nbsp;<span id="signInInfo" style="color:DodgerBlue;font-weight:bold;background-color:white;padding:8px;"></span>
+      <span style="float:right;"><button id="helpButton" style="margin: 10px;border-left: 10px;border-top: 10px;">Help</button></span>
+      <span style="float:right;">&nbsp;&nbsp; &nbsp;</span>
+      <img src="images/Help-icon.png" alt="?" class="infoCursor" style="float:right;" id="generalInfo" height="40px" width="40px" style="margin-top: 10px;" />
+      <span style="float:right;">&nbsp;&nbsp; &nbsp;</span>
+      <span id="showSchedule" style="float:right;"><button id="showScheduleButton" style="margin: 10px;border-left: 10px;border-top: 10px;">Show Full Schedule</button></span>
+    </div>
+
+    <br/> <br/>
+
+    <!-- The dialogs -->
+
+    <!-- The registration (or enroll) diaglog -->
+      <div id="enrollDialog">
+        <form action="register.php" method="post" id="registerForm">
+
+            <label for="fname">First Name: </label> <input type="text" id="fname" name="fname" size="30" maxlength="20" class="rounded2"/> <br/>
+            <label for="lname">Last Name: </label> <input type="text" id="lname" name="lname" size="30" maxlength="30" class="rounded2"/>  <br/> <br/>
+
+            <label for="email">Email: </label> <input type="text" id="email" name="email" size="30" maxlength="50" class="rounded2"/> <br/>
+            <label for="email2">Confirm email: </label> <input type="text" id="email2" name="email2" size="30" maxlength="50" class="rounded2"/> <br/>
+            <label for="phone">Phone No: </label> <input type="text" id="phone" name="phone" size="20" maxlength="13" class="rounded2"/> <br/>
+            <label style="font-size: small;">(###-###-####)</label> <br/> <br/>
+            <label for="pwd">
+                Password: <img src="images/Help-icon.png" alt="?" class="infoCursor" id="enrollPwdInfo" height="20px" width="20px"  alt="?" />
+            </label>
+            <input type="password" id="pwd" name="pwd" size="30" maxlength="20" class="rounded2"/> <br/>
+            <label for="pwd2">Confirm password: </label> <input type="password" id="pwd2" name="pwd2" size="30" maxlength="20" class="rounded2"/>
+            <br/>
+            <label for="ck2">Show Passwords: </label>
+            <input type="checkbox" name='ck2' onclick="toggleRegisterPasswords()" /><br/><br/>
+            <input type="submit" name="register" value="Enroll"/>
+            <img src="images/Help-icon.png" alt="?" class="infoCursor" id="enrollInfo" height="40px" width="40px" />
+
+        </form>
+        <div id="registerResult"></div>
+      </div>
+
+
+      <div id="signInDialog">
+        <form action="signin.php" method="post id" id="signInForm">
+            <label for="emailSignIn">Email: </label>&nbsp;
+
+            <input type="text" id="emailSignIn" name="emailSignIn" size="30" maxlength="50" class="rounded2"/> <br/>
+            <label for="pwdSignIn">Password: </label>&nbsp;
+            <input type="password" id="pwdSignIn" name="pwdSignIn" size="30" maxlength="20" class="rounded2" /> <br/>
+            <label for="ck1">Show Password: </label>
+            <input type="checkbox" name='ck1' onclick='togglepwdSignIn()'/>
+            <br/>
+            <br/>
+            <label for="cb_remember">Remember Me:&nbsp;</label>
+            &nbsp;<input type="checkbox" id="cb_remember" name="cb_remember" /> <br/>
+
+            <br/>
+            <input type="submit" name="signIn" value="Sign In"/>&nbsp;&nbsp;
+            <img src="images/Help-icon.png" id="signInInfoImg" alt="?" height="40px" width="40px" class="infoCursor" />
+            <a href="#" id="forgotPasswordTrigger" target="_self" style="float:right; padding=5px;">Forgot Password</a>
+        </form>
+        <div style="color: red" id="signInResultNG"></div>
+      </div>
+
+      <div id="forgotPasswordDialog">  <!-- displays after you've clicked on the "Forgot Password" link in the Sign In dialog -->
+          <form action="passwordreset.php" id="forgotPasswordForm" method="post">
+              <img src="images/Help-icon.png" id="forgotPasswordInfo" alt="?" height="40px" width="40px" class="infoCursor" style="float: left"/>
+              <label for="forgotPasswordEmailInput" style="float: left">Enter Email: </label>
+              <input type="text" id="forgotPasswordEmailInput" name="forgotPasswordEmailInput"/><br/><br/>
+              <input type="submit" value="Reset Password"/> <br/><br/>
+          </form>
+          <div id="forgotPasswordResultMsg"></div>
+          <div id="enterResetCodeDiv">
+            A code has been sent to your email. Enter the code here and press &quot;Submit&quot;<br/>
+            <span style="color:red;">Do not close this dialog until you have entered the code</span>
+            <br/>
+            <form action="" method="post" id="changePasswordForm">
+               <input type="text" id="changePasswordIdCode" name="changePasswordIdCode" />
+               <input type="submit" value="Submit" id="changePasswordFormSubmit" />
+               <span id="changePasswordFormErrorMsg"></span>
+            </form>
+          </div>
+          <img id="ajaxLoaderGif" src="images/ajax-loader.gif" alt="Wait" />
+      </div>
+
+      <div id="setNewPasswordDialog">   <!-- displays after you've entered your emailed change password code -->
+         <form id="setNewPasswordForm">
+            <label for="setNewPwd1">Password: </label><input type="password" id="setNewPwd1" name="setNewPwd1"/> <br/>
+            <label for="setNewPwd2">Confirm password: </label><input type="password" id="setNewPwd2" name="setNewPwd2"/> <br/><br/>
+            <input type="submit" value="Submit" id="setNewPasswordFormSubmit" />
+            <div id="passwordRestCode"></div>
+         </form>
+      </div>
+
+      <div id="swapDialog">
+          <div id="swapDialogTopMessage"></div>
+          <hr/>
+          <div id="swapFormDiv"></div>
+          <hr/>
+          <div id="swapDialogBottomMessage"></div>
+      </div>
+
+      <div id="signInResultOK"></div>
+      <div id="messageDialog"></div>
+      <div id="confirmDialogForInsert"></div>
+      <div id="confirmDialogForRemove"></div>
+      <div id="cd_str" style="display: none";></div>
+
+    <!-- start of Accordion -->
+
+  <div>
+      <div style="display: flex;flex-direction: row;">
+          <img src="mhk_std_logo_transparent 640.png" width="15%"/>
+          <h1 style="text-align:center;color:red;">2024 Salvation Army Bellringing Signup</h1>
+      </div>
+      <div id="signInFirstWarning" style="font-weight:bold; padding:15px;">
+           <h3>Instructions to sign up for a Bell Ringing Slot</h3>
+           <ul>
+               <li>Enroll (you only need to do this once) - click on the &quot;Enroll&quot; link in the top left corner</li>
+               <li>After that you can sign in by clicking on the &quot;Sign In&quot; link in the top left corner</li>
+               <li>If you need help at any time let your mouse pointer hover over the  <img src="images/Help-icon.png" alt="?" height="25px" width="25px"/> icon</li>
+               <li>After signing in, to select a time slot, just click on that time slot. To remove yourself from the time slot, click on it again</li>
+               <li>If you have any questions please email Jeff Baker at <a href="mailto:wjeffreybaker@gmail.com">wjeffreybaker@gmail.com</a></li>
+               <li>For problems with this application (i.e. login) please email Mark Zeiger at <a href="mailto:mark.zeiger@gmail.com">mark.zeiger@gmail.com</a></li>
+           </ul>
+      </div>
+      <div id="calendarDiv"></div>
+      <form id="hiddenForm">
+        <input type="hidden" id="rgrid" value="" name="rgrid">
+      </form>
+      <div style="display:none;" id="admin"></div>
+  </div>
+
+</body>
+</html>

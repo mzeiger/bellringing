@@ -1,0 +1,124 @@
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+  <title>Bell Ringing Administration</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel ="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css">
+
+</head>
+
+<body>
+    <div style="margin-left: 20%">
+        <h1>Insert, Delete, or Change Bell Ringing Schedule</h1>
+        <h2 style="color:red;">Be careful! Changes may not be undone.</h2>
+        <div id="update" style="border: 1px solid black; padding: 3px; width: 40%; float:left; margin: 5px";>
+            <form id="formChange">
+                <label for="dateId">Date</label> <input type="text" id="dateId" name="dateNM" readonly/><br/><br/>
+                <label for="locationId">Location</label> <select id="locationId" name="locationNM"></select> &nbsp
+                               <input type="checkbox" name="secondaryLocNM" id="secondaryLocId"/>&nbsp;Make location secondary<br/><br/>
+                <label for="slotId">Time Slot</label> <select id="slotId" name="slotNM"></select><br/><br/>
+                <label for="ringerId">Ringer</label> <select id="ringerId" name="ringerNM"></select><br/><br/>
+                <button id="insertOrUpdate">Insert or Update</button>
+            </form>
+            <br/>
+
+            <div id="instructions">
+                <p>To insert or change a ringer select the date, location, timeslot, and ringer and click on the "Insert or Update" button.</p>
+                <p>To delete a ringer (empty a slot) select the date, location, and timeslot and leave the ringer on the "Select..." choice.
+                Then click on the "Insert or Update" button.</P>
+                <p>If you want to put a person on a second door in a particular location check the "Make location secondary" checkbox. This will
+                put the person in the "schedule" database but the position will not show in the application.</p>
+            </div>
+            <p id="message" style="font-weight: bolder"></p>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+
+    <script type="text/javascript">
+
+        $(initialize);
+
+        function initialize() {
+            $("#dateId").datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+            $("#startDate").datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+            $("#endDate").datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+            $("#dateId").val("") ;
+            $("#secondaryLocId").attr('checked', false);
+            $("#insertOrUpdate").click(doInsertOrUpdate);
+            $("#changeDates").click(doChangeDates);
+            fillDropDowns();
+            getStartEndDates();
+        }
+
+        function fillDropDowns() {
+            $.getJSON("adminBellRinging.php", {"type": "location"}, function(data) {
+                $("#locationId").append("<option value=0>select...</option>");
+                for (var i = 0; i < data.length; i++)  {
+                    $("#locationId").append("<option value=" + data[i].id + ">" + data[i].location_name + "</option>");
+                }
+            }) ;
+
+            $.getJSON("adminBellRinging.php", {"type": "ringer"}, function(data) {
+                $("#ringerId").append("<option value=0>select...</option>");
+                for (var i = 0; i < data.length; i++)  {
+                    $("#ringerId").append("<option value=" + data[i].id + ">" + data[i].lname + ", " + data[i].fname + "</option>");
+                }
+            }) ;
+
+            $.getJSON("adminBellRinging.php", {"type": "slot"}, function(data) {
+                $("#slotId").append("<option value=0>select...</option>");
+                for (var i = 0; i < data.length; i++)  {
+                    $("#slotId").append("<option value=" + data[i].id + ">" + data[i].time + "</option>");
+                }
+            }) ;
+        }
+
+        function getStartEndDates() {
+            $.getJSON("adminBellRinging.php", {"type": "startend"}, function(data) {
+                $("#startDate").val(data[0].start_dt);
+                $("#endDate").val(data[0].end_dt);
+
+/*                $("#slotId").append("<option value=0>select...</option>");
+                for (var i = 0; i < data.length; i++)  {
+                    $("#slotId").append("<option value=" + data[i].id + ">" + data[i].time + "</option>");
+                }*/
+            });
+        }
+
+        function doInsertOrUpdate(event) {
+            event.preventDefault() ;
+            var data = $("#formChange").serialize();
+            $.get("adminBellRingingChange.php", data,  processResult) ;
+        }
+
+        function doChangeDates(event) {
+            event.preventDefault();
+            var data = $("#formProjectDates").serialize();
+            $.get("adminBellRingingStartEnd.php", data, processResultStartEnd);
+        }
+
+        function processResult(data, status) {
+            $("#message").html(data);
+        }
+
+        function processResultStartEnd(data, status) {
+            $("#messageStartEnd").html(data);
+        }
+
+    </script>
+</body>
+
+</html>
