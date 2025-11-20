@@ -1,0 +1,192 @@
+<style>
+    table {
+        border-collapse: collapse;
+    }
+
+     table td {
+         border: 1px solid black;
+         padding: 5px;
+     }
+
+     p {
+         text-align: center;
+     }
+     .red {
+         color: red;
+     }
+     td {
+     padding-left: 5px;
+     padding-right: 5px;
+     }
+     div {
+         margin-left: 20%;
+     }
+
+</style>
+
+
+<?php // bellringingreminder.php
+
+require_once 'inc/db_connect.php';
+
+define("lb", "<br/>");
+
+// cron job run every day at 6:00 AM to send email to those scheduled for that day
+$dt = new DateTime();
+$dt1 = $dt->format('Y-m-d');
+$dt2 = $dt->format('l, F j, Y'); // Formatted as Wednesday, February 11, 2015
+
+$arrayOfFullDailySchedules = getDailySchedules($dbh, $dt1);
+
+$sql = "select distinct ringer from v_schedule where dt = ? order by ringer";
+try
+{
+    $query = $dbh->prepare($sql);
+    $query->execute(array($dt1));
+    $dailyRingerIds = $query->fetchAll();
+
+    $sql = "select * from v_schedule where dt = ? and ringer = ? order by slot";
+    $query2 = $dbh->prepare($sql);
+    foreach ($dailyRingerIds as $dr) {
+        $query2->execute(array($dt1, $dr["ringer"]));
+        $schedules = $query2->fetchAll();
+
+        sendEmails($schedules, $dt2, $arrayOfFullDailySchedules);
+    }
+
+    echo "Bell Ringing Reminder has run successfully on " . $dt2;
+} catch (Exception $ex) {
+    echo "Error Ocurred: " . $ex->getMessage();
+    return;
+}
+
+function sendEmails($schedules, $dt2, $arrayOfFullDailySchedules)
+{
+    $msg = "<div>";
+    $firstTime = true;
+    $i = 1;
+    foreach ($schedules as $sch) {
+        if ($firstTime) {
+            $msg .= sprintf("<h3>Hi %s,<br/><br/>\r\n\r\nOn %s you are scheduled for bell ringing as follows:</h3><ol>\r\n", $sch["fname"], $dt2);
+            $firstTime = false;
+        }
+        $msg .= sprintf("<li><h4>%s at %s</li></h4>\r\n", $sch['location_name'], $sch['interval']);
+
+    }
+    $msg .= "</ol>";
+    $msg .= "<h2>Thank you for your participation in this important event</h2>.";
+    $msg .= "<h3>Below are today's schedules for all the bellringing sites.<br/>";
+    $msg .= "You may use these to see who you will be relieving and who will relieve you.</h3>";
+    $msg .= "<br/><br/><i>This is an unmonitored mailbox. Please do not reply to this message.</i><br/><br/>";
+    foreach ($arrayOfFullDailySchedules as $schedule) {
+        $msg .= $schedule . lb;
+    }
+    $msg .= "</div>";
+    $to = $sch["email"];
+    $subject = sprintf("Bell ringing schedule for %s", $dt2);
+    $header = "From:noreply-bellringing@monumenthillkiwanis.org \r\n";
+    $header .= "MIME-Version: 1.0\r\n";
+    $header .= "Content-type: text/html\r\n";
+
+    $retval = mail($to, $subject, $msg, $header);
+    // echo sprintf("Retval = %s<br/>To = %s<br/>Subject = %s<br/>Msg: %s<br/><br/>", $retval, $to, $subject, $msg);
+}
+
+function getDailySchedules($dbh, $dt)
+{
+
+    try {
+        $sql = "select id from locations";
+        $query = $dbh->prepare($sql);
+        $query->execute();
+        while ($location_id = $query->fetch(PDO::FETCH_BOTH)) {
+
+            $arrayOfFullDailySchedules[$location_id['id']] = slotsForDayAndLocation($dbh, $dt, $location_id['id']);
+
+        }
+        return $arrayOfFullDailySchedules;
+    } catch (exception $ex) {
+        echo $ex->getMessage();
+    }
+}
+
+function slotsForDayAndLocation($dbh, $ringDate, $location)
+{
+    try {
+        $sql = "select id, time from timeslots order by id";
+        $query = $dbh->prepare($sql);
+        $query->execute();
+        $arrayTimeslots = [];
+        while ($timeslots = $query->fetch(PDO::FETCH_BOTH)) {
+            array_push($arrayTimeslots, $timeslots);
+        }
+
+        $sql = "select id, location_name from locations order by id";
+        $query = $dbh->prepare($sql);
+        $query->execute();
+        $arrayLocations = [];
+        while ($locations = $query->fetch(PDO::FETCH_BOTH)) {
+            array_push($arrayLocations, $locations);
+        }
+
+        $loc_name = '';
+        foreach ($arrayLocations as $loc) {
+            if ($loc['id'] == (int) $location) {
+                $loc_name = $loc['location_name'];
+            }
+
+        }
+
+        $sql = "SELECT * FROM v_schedule_with_phone where dt = ? and location = ? and slot=?";
+        $query = $dbh->prepare($sql);
+
+        return showAllSlots($query, $ringDate, $location, $arrayTimeslots, $loc_name);
+
+    } catch (exception $ex) {
+        echo $ex->getMessage();
+    }
+}
+
+function showAllSlots($query, $ringDate, $location, $arrayTimeslots, $loc_name)
+{
+
+    $rd = new DateTime($ringDate);
+    try {
+        $returnString = "";
+
+        $returnString .= "<table><tr>";
+        $returnString .= "<td colspan='4'><b>Time slots for " . $loc_name . ' on ' . $rd->format('l, F j, Y') . "</td></b>";
+        $rowString = "";
+        foreach ($arrayTimeslots as $timeslot) {
+
+            $theArray = array($ringDate, (int) $location, $timeslot['id']);
+
+            $query->execute($theArray);
+
+            $slotFromView = $query->fetch(PDO::FETCH_ASSOC);
+
+            if ($query->rowCount() != 0) {
+
+                $ringerName = sprintf("<td>%s</td><td>%s</td><td>%s</td>", $timeslot['time'],
+                    $slotFromView['fname'] . " " . $slotFromView['lname'], $slotFromView['phone']);
+            } else {
+                $ringerName = sprintf("<td>%s</td><td>%s</td><td>%s</td>",
+                    $timeslot['time'], "<span class='red'>Empty</span>", "");
+            }
+
+            $rowString .= "<tr>";
+            $rowString .= $ringerName;
+            $rowString .= "</tr>";
+
+        }
+
+        $returnString .= $rowString . "</table>" . lb . lb;
+
+        return $returnString;
+
+    } catch (exception $ex) {
+        echo $ex->getMessage();
+    }
+}
+
+?>

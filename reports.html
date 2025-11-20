@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+        <title>Bell Ringing Reports</title>
+        <style>
+        div.border {
+            border: 1px solid black;
+            width: 40%;
+            text-align: center;
+            margin-left: 20%;
+        }
+
+        div.noborder {
+
+            width: 40%;
+            text-align: center;
+            margin-left: 20%;
+        }
+        </style>
+    </head>
+
+    <body>
+
+        <div>
+
+            <div class="noborder">
+                <h1>Bell Ringing Reports</h1>
+            </div>
+            <div class="border">
+                <h2>Empty Slots</h2>
+                <h3>Shows slots that have not been filled for a selected date range.<br/></br>
+                    <input type="button" value="submit" onclick="window.open('emptyslots.html', '_blank');return false" />
+                </h3>
+            </div>
+
+            <br/>
+
+            <div class="border">
+                <h2>Ringer Counts - HTML</h2>
+                <h3>Lists the number of times each ringer has signed up.<br/></br>
+                    <input type="button" value="submit" onclick="window.open('sessionCountsByDate.php', '_blank');return false" />
+                </h3>
+            </div>
+
+            <br/>
+
+            <div class="border">
+                <h2>Ringer Counts - Excel File</h2>
+                <h3>Excel file of the number of times each ringer has signed up.<br/></br>
+                    <input type="button" value="submit" onclick="window.open('sessionCountsExcel.php', '_blank');return false" />
+                </h3>
+            </div>
+
+            <br/>
+
+            <div class="border">
+                <h2>Ringers - HTML</h2>
+                <h3>List all the ringers who have enrolled.<br/></br>
+                    <input type="button" value="submit" onclick="window.open('ringers.php', '_blank');return false" />
+                </h3>
+            </div>
+
+            <br/>
+
+            <div class="border">
+                <h2>Ringers - Excel File</h2>
+                <h3>Excel file of all the ringers who have enrolled.<br/></br>
+                    <input type="button" value="submit" onclick="window.open('ringers_excel.php', '_blank');return false" />
+                </h3>
+            </div>
+
+            <br/>
+
+            <div class="border">
+                <h2>Money Collectors</h2>
+                <h3>List the people who have signed up to collect money at 6 PM<br/></br>
+                    <input type="button" value="submit" onclick="window.open('collectorList.php', '_blank');return false" />
+                </h3>
+            </div>
+
+            <br/>
+
+            <div class="border">
+                <h2>Make Changes to Schedule</h2>
+                <h3>Insert, delete, or change ringing schedule<br/></br> 
+                    <input type="button" value="submit" onclick="window.open('adminBellRinging.html', '_blank');return false" />
+                </h3>
+            </div>
+
+    </body>
+
+</html>

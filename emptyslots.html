@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+  <title>Bell Ringing Empty Time Slots</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <link rel="stylesheet" href="/resources/demos/style.css">
+</head>
+
+<body>
+    <div style="border: 1px solid black; width:40%; margin:5px; padding:5px;">
+        <h3>Get Empty slots</h3>
+        <form action="emptyslots.php" method="post">
+            <label for="start_dt">Start Date (yyyy-mm-dd)</label> &nbsp;
+            <input type="date" id="start_dt" name="start_dt" /> <br/>
+            <label for="end_dt">End Date (yyyy-mm-dd)</label> &nbsp;
+            <input type="date" id="end_dt" name="end_dt" /> <br/><br/>
+            <input type="submit" value="Submit" />
+        </form>
+    </div>
+
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+        $(initialize);
+
+        function initialize() {
+            $("#start_dt").datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+            $("#end_dt").datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+            $("#asOfDate").datepicker({
+                dateFormat: "yy-mm-dd"
+            });
+
+        }
+
+    </script>
+
+</body>
+
+</html>

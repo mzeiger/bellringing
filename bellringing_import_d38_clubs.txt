@@ -1,0 +1,81 @@
+fname	lname	email	phone	password	Date	Time	Slot
+Lewis-Palmer	Middle School	danglopez+1@msn.com	719-358-1017	builders_2025	2025-12-07	9	300
+Lewis-Palmer	Middle School	danglopez+1@msn.com	719-358-1017	builders_2025	2025-12-07	10	300
+Lewis-Palmer	Middle School	danglopez+1@msn.com	719-358-1017	builders_2025	2025-12-07	11	300
+Lewis-Palmer	Middle School	danglopez+1@msn.com	719-358-1017	builders_2025	2025-12-07	12	300
+Lewis-Palmer	Middle School	danglopez+1@msn.com	719-358-1017	builders_2025	2025-12-07	1	300
+Lewis-Palmer	Middle School	danglopez+1@msn.com	719-358-1017	builders_2025	2025-12-07	2	300
+Lewis-Palmer	Middle School	danglopez+1@msn.com	719-358-1017	builders_2025	2025-12-07	3	300
+Lewis-Palmer	Middle School	danglopez+1@msn.com	719-358-1017	builders_2025	2025-12-07	4	300
+Lewis-Palmer	Middle School	danglopez+1@msn.com	719-358-1017	builders_2025	2025-12-07	5	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-11-30	9	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-11-30	10	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-11-30	11	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-11-30	12	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-11-30	1	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-11-30	2	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-11-30	3	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-11-30	4	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-11-30	5	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-12-14	9	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-12-14	10	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-12-14	11	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-12-14	12	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-12-14	1	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-12-14	2	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-12-14	3	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-12-14	4	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-12-14	5	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-12-21	9	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-12-21	10	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-12-21	11	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-12-21	12	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-12-21	1	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-12-21	2	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-12-21	3	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-12-21	4	300
+Lewis-Palmer	Key Club	mike.luginbuhl+1@comcast.net	719-313-8532	keys-2025	2025-12-21	5	300
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
+							
