@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Listen for Xdebug",
+      "type": "php",
+      "request": "launch",
+      "port": 9003,
+      "args": ["bellringing_import_tlwc_2025.txt"],
+      "pathMappings": {
+        "/var/www/html": "${workspaceFolder}",
+        "/opt/lampp/htdocs": "${workspaceFolder}",
+        "C:/xampp/htdocs": "${workspaceFolder}"
+      },
+      "log": true
+    },
+    {
+      "name": "Launch importRingers",
+      "type": "php",
+      "request": "launch",
+      "program": "${workspaceFolder}/importRingers.php",
+      "args": [
+        "c:\\xampp\\htdocs\\bellringing\\bellringing_import_tlwc_2025.txt"
+      ],
+      "port": 9003
+    }
+  ]
+}

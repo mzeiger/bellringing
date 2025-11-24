@@ -1,0 +1,38 @@
+fname	lname	email	phone	password	Date	Time	Slot
+Julie	Shook	jaeshook@gmail.com	719-351-0408	tlwc-2025	2025-12-03	9	200
+Pamela	Acuff	acuffconsulting@me.com	402-960-1118	tlwc-2025	2025-12-03	10	200
+Jill	Markworth	jmarkworth@comcast.net	719-641-0299	tlwc-2025	2025-12-03	11	200
+Kristi	Westhoff	kwesthoff@comcast.net	719-338-5494	tlwc-2025	2025-12-03	12	200
+Judy	Williamson	jmfwmson@yahoo.com	719-337-8485	tlwc-2025	2025-12-03	1	200
+Judy 	Sawyer	jubloom64@yahoo.com	719-728-9828	tlwc-2025	2025-12-03	2	200
+Lynne 	Caletti	glcalet@comcast.net	719-651-3471	tlwc-2025	2025-12-03	3	200
+Vonda	Dowdy	vondadowdy@msn.com	719-330-4785	tlwc-2025	2025-12-03	4	200
+Sandy	Mangiarelli	sandy@mangiarelli.com	719-351-0180	tlwc-2025	2025-12-03	5	200
+Koko	Pavich	tkpovich@yahoo.com	808-866-0686	tlwc-2025	2025-12-10	9	200
+Donna	Muench	mtndonna@comcast.net	719-659-0383	tlwc-2025	2025-12-10	10	200
+Kate	Best	kadohutch@gmail.com	512-437-1048	tlwc-2025	2025-12-10	11	200
+Phoebe	Auld	paauld@gmail.com	512-663-0631	tlwc-2025	2025-12-10	12	200
+Phoebe	Auld	paauld@gmail.com	512-663-0631	tlwc-2025	2025-12-10	1	200
+Dixie	Canon	dixican@comcast.net	719-761-9284	tlwc-2025	2025-12-10	2	200
+Carol	Costakis	costakis.carol@gmail.com	219-707-1455	tlwc-2025	2025-12-10	3	200
+Carolyn	Baker	bakercl801@gmail.com	703-869-2164	tlwc-2025	2025-12-10	4	200
+Carmen	Carubia	rcarubia@aol.com	719-659-3248	tlwc-2025	2025-12-10	5	200
+Sally	Keding	sallou12@yahoo.com	847-710-2071	tlwc-2025	2025-12-17	9	200
+Judy	Williamson	jmfwmson@yahoo.com	719-337-8485	tlwc-2025	2025-12-17	10	200
+Billie	Healy	famhealy@comcast.net	719-510-0925	tlwc-2025	2025-12-17	11	200
+Sue	Leggiero	sleggie26@me.com	719-440-8969	tlwc-2025	2025-12-17	12	200
+Charlie	Hayes	nonahayes@comcast.net	719-237-3863	tlwc-2025	2025-12-17	1	200
+Cathy	Wedo	cmwedo@comcast.net	719-290-2833	tlwc-2025	2025-12-17	2	200
+Nancy	Pokorny	nancyp5315@gmail.com	720-299-6043	tlwc-2025	2025-12-17	3	200
+Carolyn	Baker	bakercl801@gmail.com	703-869-2164	tlwc-2025	2025-12-17	4	200
+Sandy	Mangiarelli	sandy@mangiarelli.com	719-351-0180	tlwc-2025	2025-12-17	5	200
+Maureen	Morgan	maureenmorgan@mindspring.com	719-641-5305	tlwc-2025	2025-12-24	9	200
+Cyndi	Preston	prestoncynthia@rocketmail.com	719-310-8037	tlwc-2025	2025-12-24	10	200
+Diana	Faust	dlfaust1986@gmail.com	214-354-9538	tlwc-2025	2025-12-24	11	200
+Susan	Propst	susan.propst@zoho.com	719-466-7070	tlwc-2025	2025-12-24	12	200
+Sue	Leggiero	sleggie26@me.com	719-440-8969	tlwc-2025	2025-12-24	1	200
+							
+							
+							
+							
+							
