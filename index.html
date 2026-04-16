@@ -94,6 +94,64 @@
     cursor: help;
 }
 
+.pwd-input-wrap {
+    position: relative;
+    display: inline-block;
+    width: 250px;
+}
+
+.enroll-input-wrap {
+    display: inline-block;
+    width: 266px;
+    margin-bottom: 6px;
+}
+
+.enroll-input-wrap input.rounded2 {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.enroll-pwd-wrap {
+    width: 266px;
+    margin-bottom: 6px;
+}
+
+.pwd-input-wrap input.rounded2 {
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 2.5rem;
+}
+
+.pwd-toggle-inside {
+    position: absolute;
+    right: 5px;
+    top: 0;
+    width: 2.5rem;
+    height: 100%;
+    border: none;
+    background: transparent;
+    color: #6c757d;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.25rem;
+    z-index: 5;
+    padding: 0;
+}
+
+.pwd-toggle-inside:hover,
+.pwd-toggle-inside:focus-visible {
+    color: #212529;
+    background: rgba(0, 0, 0, 0.06);
+    outline: none;
+}
+
+.pwd-toggle-inside i {
+    font-size: 1.1rem;
+    pointer-events: none;
+}
+
 
 </style>
 
@@ -105,6 +163,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.0.5/css/themes/tooltipster-punk.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.0.5/css/themes/tooltipster-noir.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.0.5/css/themes/tooltipster-light.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" type="text/css" href="css/jquery.datepick.css" />
 
     <title>Monument Hill Kiwanis Bell Ringing</title>
@@ -128,15 +187,22 @@
 
       function initialize()
       {
+          var _resetTokParams = new URLSearchParams(window.location.search);
+          var _resetTok = _resetTokParams.get("token");
+          if (_resetTok && /^[a-f0-9]{64}$/i.test(_resetTok)) {
+              window.location.replace("reset_password.php?token=" + encodeURIComponent(_resetTok));
+              return;
+          }
+
           initializeToolTips();
           setAccordion(); // Sets up the basic page as a jQuery Accordion
           setRegisterValidate(); // Sets up validation for the "registration" form
           setSignInValidate(); // Sets up validation for the "Sign In" form
           setForgotPasswordValidate(); // Sets up validation for " Forgot Password form"
-          setChangePasswordFormValidate();
-          setNewPwdValidate(); // sets up validation for the new password dialog
           setDialogs(); // Sets up the Sign In and Registration forms as dialogs
           setShowCalendarTrigger(); // Sets the "click" event for the "Show Calendar" anchor  to the showCalander() function
+          showResetSuccessMessage();
+          wirePasswordToggles();
           $("#phone").mask("000-000-0000")
 
           $("#helpButton").click(function()
@@ -151,7 +217,6 @@
           );
           $("#bellringingCalendar").hide(1); // Don't want the "Show Calendar" link to show until after successful sign in
           $("#allDaysSpan").hide(1);
-          $("#enterResetCodeDiv").hide(1);
           $("#showSchedule").hide(1);
           theCookie = $.cookie("MHKBR");
           if (typeof(theCookie) != "undefined")
@@ -286,14 +351,13 @@
               modal: true, autoOpen: false, minWidth: 800, title: "Reset Password",
               close: function(event, ui)
                   {
-                      $("#enterResetCodeDiv").hide(1);
-                      $("#forgotPasswordResultMsg").hide(1);
+                      $("#forgotPasswordResultMsg").html("");
                   }
                   ,
               open: function(event, ui)
                   {
                       $("#forgotPasswordEmailInput").val("");
-                      $("#changePasswordIdCode").val("");
+                      $("#forgotPasswordResultMsg").html("");
                   }
               }
           );
@@ -319,17 +383,6 @@
                   );
                   $("#signInDialog").dialog("open");
 
-              }
-          );
-
-          $("#setNewPasswordDialog").dialog(
-              {
-              modal: true, autoOpen: false, minWidth: 800, title: "New Password",
-              open: function(event, ui)
-                  {
-                      $("#setNewPwd1").val("");
-                      $("#setNewPwd2").val("");
-                  }
               }
           );
 
@@ -403,12 +456,9 @@
               content: $('<span><strong>Forgot Password</strong><br/><hr/>' +
                       'Enter your email address and ' +
                       'click on the &ldquo;Reset Password&rdquo;<br/>' +
-                      'button. You will be sent an email with a code<br/>' +
-                      'which you must enter in a subsequent screen.<br/>' +
-                      'Another box will be displayed where you enter<br/>' +
-                      'your new password. You have 5 minutes to<br/>' +
-                      'complete this otherwise you will have to<br/>' +
-                      'repeat the process.</span>')
+                      'button. You will be sent an email with a link<br/>' +
+                      'to set a new password. On localhost, the reset<br/>' +
+                      'link is shown directly in this dialog for testing.</span>')
               }
           );
           $('#generalInfo').tooltipster(
@@ -456,11 +506,10 @@
               content: $('<span><strong>Password Reset</strong><br/><hr/>' +
                       'If you forget your password you may<br/>' +
                       'reset it by clicking on this &ldquo;Forgot<br/>' +
-                      'Password&rdquo; link. You will be required<br/>' +
-                      'to enter your email address and a message will<br/>' +
-                      'be sent to you with a code. You must enter the<br/>' +
-                      'code in a subsequent screen within 5 minutes<br/>' +
-                      'and then you will be prompted for a new password.' +
+                      'Password&rdquo; link. Enter your email address<br/>' +
+                      'and you will receive a link to set a new password<br/>' +
+                      '(valid for one hour). On localhost the link is<br/>' +
+                      'shown in the dialog instead of email.' +
                       '</span>')
               }
           );
@@ -493,7 +542,6 @@
               }
           );
           $("#signInFirstWarning").show(1);
-          $("#enterResetCodeDiv").hide(1);
           $("#enrollTrigger").show(1);
           $("#showSchedule").hide(1);
       }
@@ -531,7 +579,7 @@
                   ,
               errorPlacement: function(error, element)
                   {
-                      error.insertAfter(element);
+                      placeValidationError(error, element);
                   }
                   ,
               submitHandler: function(form)
@@ -543,95 +591,6 @@
           )
       };
 
-
-      function setNewPwdValidate() // This form requires the new password after a "forgot"
-      {
-          $("#setNewPasswordForm").validate(
-              {
-              rules:
-                  {
-                  setNewPwd1:
-                      {
-                      required: true, minlength: 6, nowhitespace: true, pattern: /^(?=.*\d)(?=.*[A-Za-z]).{6,}$/
-                      } ,
-                  setNewPwd2:
-                      {
-                      equalTo: "#setNewPwd1"
-                      }
-                  } ,
-              messages:
-                  {
-                  setNewPwd1:
-                      {
-                      pattern: "Password must be at least 6 characters with at least one letter and 1 digit"
-                      }
-                  } ,
-              errorPlacement: function(error, element)
-                  {
-                      error.insertAfter(element);
-                  } ,
-              submitHandler: function(form)
-                  {
-                      var cpc = "forgotPasswordEmailInput=" + $("#forgotPasswordEmailInput").val();
-                      cpc += "&" + "changePasswordIdCode=" + $("#changePasswordIdCode").val();
-                      cpc += "&" + "newPassword=" + $("#setNewPwd1").val();
-
-                      $.post("dopasswordreset.php", cpc, passwordResetResult);
-                  }
-              }
-          )
-      };
-
-
-      function passwordResetResult(data, status)
-      {
-          $("#setNewPasswordDialog").dialog("close");
-          $("#messageDialog").html(data);
-          $("#messageDialog").dialog("open");
-      }
-
-      function setChangePasswordFormValidate()
-      {
-          $("#changePasswordForm").validate(
-              {
-              rules:
-                  {
-                  changePasswordIdCode:
-                      {
-                      required: true
-                      }
-                  }
-                  ,
-              errorPlacement: function(error, element)
-                  {
-                      error.appendTo("#changePasswordFormErrorMsg");
-                      //error.insertAfter(element);
-                  }
-                  ,
-              submitHandler: function(form)
-                  {
-                      var cpc = "forgotPasswordEmailInput=" + $("#forgotPasswordEmailInput").val();
-                      cpc += "&" + "changePasswordIdCode=" + $("#changePasswordIdCode").val();
-                      $.post("testresetpasswordcode.php", cpc, showPasswordResetForm);
-                  }
-              }
-          )
-      };
-
-
-      function showPasswordResetForm(data, status)
-      {
-          if (data.substr(0, 5) == "Valid")
-          {
-              $("#forgotPasswordDialog").dialog("close");
-              $("#setNewPasswordDialog").dialog("open");
-          }
-          else
-          {
-              $("#messageDialog").html("Invalid Email/Reset Code");
-              $("#messageDialog").dialog("open");
-          }
-      }
 
       function setRegisterValidate() // jQuery validation for the "Registration" form
       {
@@ -691,7 +650,7 @@
 
               errorPlacement: function(error, element)
                   {
-                      error.insertAfter(element);
+                      placeValidationError(error, element);
                   }
                   ,
               submitHandler: function(form)
@@ -719,6 +678,16 @@
           }
       }
 
+      function placeValidationError(error, element)
+      {
+          var wrapper = element.closest(".pwd-input-wrap");
+          if (wrapper.length) {
+              error.insertAfter(wrapper);
+          } else {
+              error.insertAfter(element);
+          }
+      }
+
       function setForgotPasswordValidate()
       {
           $("#forgotPasswordForm").validate(
@@ -739,10 +708,9 @@
                   ,
               submitHandler: function(form)
                   {
-                      $("#enterResetCodeDiv").hide(1);
                       $("#forgotPasswordResultMsg").html("");
                       var formData = $("#forgotPasswordForm").serialize();
-                      $.post("passwordreset.php", formData, forgotPasswordResult);
+                      $.post("forgot_password_request.php", formData, forgotPasswordResult);
                       $("#ajaxLoaderGif").show(1);
                   }
               }
@@ -753,22 +721,35 @@
       function forgotPasswordResult(data, status)
       {
           $("#ajaxLoaderGif").hide(1);
-          if (data.substr(0, 5) == "Email") // if forgotpassword.php echos "Email ..." as first word then email was not found in database so do nothing
-          {
-              $("#enterResetCodeDiv").hide(1);
-              $("#forgotPasswordResultMsg").html(data);
+          var payload = data;
+          if (typeof payload === "string") {
+              try {
+                  payload = JSON.parse(payload);
+              } catch (e) {
+                  payload = {ok: false, error: "Unexpected response from reset request."};
+              }
           }
-          else
-          {
-              // code to process reset goes here
-              $("#enterResetCodeDiv").show(1);
-          }
-      }
 
-      function changePwd()
-      {
-          $("#forgotPasswordDialog").dialog("close");
-          $("#setNewPasswordDialog").dialog("open");
+          if (!payload || payload.ok !== true) {
+              var err = payload && payload.error ? payload.error : "Could not process reset request.";
+              $("#forgotPasswordResultMsg").html('<span style="color:red;">' + err + '</span>');
+              return;
+          }
+
+          if (payload.dev_reset_url) {
+              var safeUrl = $('<div/>').text(payload.dev_reset_url).html();
+              var msg = payload.message ? payload.message : "Open the reset link below.";
+              $("#forgotPasswordResultMsg").html(
+                  '<div style="color:#0b5ed7;">' + msg + '</div>' +
+                  '<div style="margin-top:10px;"><a href="' + safeUrl + '">' + safeUrl + '</a></div>'
+              );
+          } else {
+              var okMsg = payload.message ? payload.message : "If an account exists for that email, you will receive password reset instructions shortly.";
+              $("#forgotPasswordResultMsg").html(
+                  '<div style="color:#0b5ed7;">' + okMsg + '</div>' +
+                  '<div style="color:#CC0000; margin-top:10px; font-size:small;">Please close this window when you are finished here. The reset link in your email will open the password reset page in a new window.</div>'
+              );
+          }
       }
 
       function signInResult(data, status)
@@ -805,6 +786,22 @@
           else // if sign in not successful then show message in dialog box
           {
               $("#signInResultNG").html(data);
+          }
+      }
+
+      function showResetSuccessMessage()
+      {
+          var params = new URLSearchParams(window.location.search);
+          if (params.get("reset") === "1") {
+              $("#messageDialog").html("Password updated. Please sign in with your new password.");
+              $("#messageDialog").dialog("open");
+              params.delete("reset");
+              var next = window.location.pathname;
+              var nextQs = params.toString();
+              if (nextQs) {
+                  next += "?" + nextQs;
+              }
+              history.replaceState({}, document.title, next);
           }
       }
 
@@ -1041,28 +1038,28 @@
           $("#messageDialog").dialog("open");
       }
 
-      function togglepwdSignIn() {
-        var x = document.getElementById("pwdSignIn");
-        if (x.type === "password") {
-            x.type = "text";
-         } else {
-            x.type = "password";
-        }
+      function wirePasswordToggle(btnId, inputId) {
+          var btn = document.getElementById(btnId);
+          var input = document.getElementById(inputId);
+          if (!btn || !input) {
+              return;
+          }
+          btn.addEventListener("click", function() {
+              var icon = btn.querySelector("i");
+              var show = input.type === "password";
+              input.type = show ? "text" : "password";
+              if (icon) {
+                  icon.className = show ? "bi bi-eye-slash" : "bi bi-eye";
+              }
+              btn.setAttribute("title", show ? "Hide password" : "Show password");
+              btn.setAttribute("aria-label", show ? "Hide password" : "Show password");
+          });
       }
 
-      function toggleRegisterPasswords() {
-        var x = document.getElementById("pwd");
-        if (x.type === "password") {
-            x.type = "text";
-         } else {
-            x.type = "password";
-        }
-        var x = document.getElementById("pwd2");
-        if (x.type === "password") {
-            x.type = "text";
-         } else {
-            x.type = "password";
-        }
+      function wirePasswordToggles() {
+          wirePasswordToggle("toggleEnrollPwd", "pwd");
+          wirePasswordToggle("toggleEnrollPwd2", "pwd2");
+          wirePasswordToggle("toggleSignInPwd", "pwdSignIn");
       }
 
 
@@ -1095,21 +1092,26 @@
       <div id="enrollDialog">
         <form action="register.php" method="post" id="registerForm">
 
-            <label for="fname">First Name: </label> <input type="text" id="fname" name="fname" size="30" maxlength="20" class="rounded2"/> <br/>
-            <label for="lname">Last Name: </label> <input type="text" id="lname" name="lname" size="30" maxlength="30" class="rounded2"/>  <br/> <br/>
+            <label for="fname">First Name: </label> <span class="enroll-input-wrap"><input type="text" id="fname" name="fname" size="30" maxlength="20" class="rounded2"/></span> <br/>
+            <label for="lname">Last Name: </label> <span class="enroll-input-wrap"><input type="text" id="lname" name="lname" size="30" maxlength="30" class="rounded2"/></span> <br/>
 
-            <label for="email">Email: </label> <input type="text" id="email" name="email" size="30" maxlength="50" class="rounded2"/> <br/>
-            <label for="email2">Confirm email: </label> <input type="text" id="email2" name="email2" size="30" maxlength="50" class="rounded2"/> <br/>
-            <label for="phone">Phone No: </label> <input type="text" id="phone" name="phone" size="20" maxlength="13" class="rounded2"/> <br/>
+            <label for="email">Email: </label> <span class="enroll-input-wrap"><input type="text" id="email" name="email" size="30" maxlength="50" class="rounded2"/></span> <br/>
+            <label for="email2">Confirm email: </label> <span class="enroll-input-wrap"><input type="text" id="email2" name="email2" size="30" maxlength="50" class="rounded2"/></span> <br/>
+            <label for="phone">Phone No: </label> <span class="enroll-input-wrap"><input type="text" id="phone" name="phone" size="20" maxlength="13" class="rounded2"/></span> <br/>
             <label style="font-size: small;">(###-###-####)</label> <br/> <br/>
             <label for="pwd">
                 Password: <img src="images/Help-icon.png" alt="?" class="infoCursor" id="enrollPwdInfo" height="20px" width="20px"  alt="?" />
             </label>
-            <input type="password" id="pwd" name="pwd" size="30" maxlength="20" class="rounded2"/> <br/>
-            <label for="pwd2">Confirm password: </label> <input type="password" id="pwd2" name="pwd2" size="30" maxlength="20" class="rounded2"/>
-            <br/>
-            <label for="ck2">Show Passwords: </label>
-            <input type="checkbox" name='ck2' onclick="toggleRegisterPasswords()" /><br/><br/>
+            <div class="pwd-input-wrap enroll-pwd-wrap">
+                <input type="password" id="pwd" name="pwd" size="30" maxlength="20" class="rounded2"/>
+                <button type="button" class="pwd-toggle-inside" id="toggleEnrollPwd" title="Show password" aria-label="Show password"><i class="bi bi-eye"></i></button>
+            </div> <br/>
+            <label for="pwd2">Confirm password: </label>
+            <div class="pwd-input-wrap enroll-pwd-wrap">
+                <input type="password" id="pwd2" name="pwd2" size="30" maxlength="20" class="rounded2"/>
+                <button type="button" class="pwd-toggle-inside" id="toggleEnrollPwd2" title="Show password" aria-label="Show password"><i class="bi bi-eye"></i></button>
+            </div>
+            <br/><br/>
             <input type="submit" name="register" value="Enroll"/>
             <img src="images/Help-icon.png" alt="?" class="infoCursor" id="enrollInfo" height="40px" width="40px" />
 
@@ -1121,13 +1123,14 @@
       <div id="signInDialog">
         <form action="signin.php" method="post id" id="signInForm">
             <label for="emailSignIn">Email: </label>&nbsp;
-
-            <input type="text" id="emailSignIn" name="emailSignIn" size="30" maxlength="50" class="rounded2"/> <br/>
+            <div class="pwd-input-wrap" style="margin-bottom: 10px;">
+                <input type="text" id="emailSignIn" name="emailSignIn" size="30" maxlength="50" class="rounded2"/>
+            </div> <br/>
             <label for="pwdSignIn">Password: </label>&nbsp;
-            <input type="password" id="pwdSignIn" name="pwdSignIn" size="30" maxlength="20" class="rounded2" /> <br/>
-            <label for="ck1">Show Password: </label>
-            <input type="checkbox" name='ck1' onclick='togglepwdSignIn()'/>
-            <br/>
+            <div class="pwd-input-wrap">
+                <input type="password" id="pwdSignIn" name="pwdSignIn" size="30" maxlength="20" class="rounded2" />
+                <button type="button" class="pwd-toggle-inside" id="toggleSignInPwd" title="Show password" aria-label="Show password"><i class="bi bi-eye"></i></button>
+            </div> <br/>
             <br/>
             <label for="cb_remember">Remember Me:&nbsp;</label>
             &nbsp;<input type="checkbox" id="cb_remember" name="cb_remember" /> <br/>
@@ -1141,33 +1144,14 @@
       </div>
 
       <div id="forgotPasswordDialog">  <!-- displays after you've clicked on the "Forgot Password" link in the Sign In dialog -->
-          <form action="passwordreset.php" id="forgotPasswordForm" method="post">
+          <form action="forgot_password_request.php" id="forgotPasswordForm" method="post">
               <img src="images/Help-icon.png" id="forgotPasswordInfo" alt="?" height="40px" width="40px" class="infoCursor" style="float: left"/>
               <label for="forgotPasswordEmailInput" style="float: left">Enter Email: </label>
               <input type="text" id="forgotPasswordEmailInput" name="forgotPasswordEmailInput"/><br/><br/>
               <input type="submit" value="Reset Password"/> <br/><br/>
           </form>
           <div id="forgotPasswordResultMsg"></div>
-          <div id="enterResetCodeDiv">
-            A code has been sent to your email. Enter the code here and press &quot;Submit&quot;<br/>
-            <span style="color:red;">Do not close this dialog until you have entered the code</span>
-            <br/>
-            <form action="" method="post" id="changePasswordForm">
-               <input type="text" id="changePasswordIdCode" name="changePasswordIdCode" />
-               <input type="submit" value="Submit" id="changePasswordFormSubmit" />
-               <span id="changePasswordFormErrorMsg"></span>
-            </form>
-          </div>
           <img id="ajaxLoaderGif" src="images/ajax-loader.gif" alt="Wait" />
-      </div>
-
-      <div id="setNewPasswordDialog">   <!-- displays after you've entered your emailed change password code -->
-         <form id="setNewPasswordForm">
-            <label for="setNewPwd1">Password: </label><input type="password" id="setNewPwd1" name="setNewPwd1"/> <br/>
-            <label for="setNewPwd2">Confirm password: </label><input type="password" id="setNewPwd2" name="setNewPwd2"/> <br/><br/>
-            <input type="submit" value="Submit" id="setNewPasswordFormSubmit" />
-            <div id="passwordRestCode"></div>
-         </form>
       </div>
 
       <div id="swapDialog">

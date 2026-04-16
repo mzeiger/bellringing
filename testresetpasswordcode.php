@@ -1,34 +1,6 @@
-<?php   // testresetpasswordcode.php
+<?php
 
-    $email = $_POST["forgotPasswordEmailInput"];
-    $cd = $_POST["changePasswordIdCode"];
+declare(strict_types=1);
 
-
-require_once 'inc/db_connect.php';
-
- try
-  {
-    $sql = "select * from ringers where email = ? and forgot_pwd_code = ?";
-
-    $query = $dbh->prepare($sql);
-    $query->execute(array($email, $cd));
-    $row = $query->fetch();
-    if ($query->rowCount() != 1)
-    {
-      echo "Invalid";    // The word "Email" must come first to signal bad email
-      return;
-    }
-    else
-    {
-        echo "Valid";
-        return;
-    }
-  }
-  catch (Exception $ex)
-  {
-        echo $ex->getMessage();
-        return;
-  }
-
-
-?>
+header('Content-Type: text/plain; charset=utf-8');
+echo 'This endpoint is deprecated. Use the reset link sent by forgot_password_request.php.';
