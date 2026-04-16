@@ -7,6 +7,7 @@ $err = isset($_GET['err']) ? (string) $_GET['err'] : '';
 $validToken = $token !== '' && preg_match('/^[a-f0-9]{64}$/i', $token);
 $safeErr = htmlspecialchars($err, ENT_QUOTES, 'UTF-8');
 $safeToken = htmlspecialchars($token, ENT_QUOTES, 'UTF-8');
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,7 +20,52 @@ $safeToken = htmlspecialchars($token, ENT_QUOTES, 'UTF-8');
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f8f9fa;
+            min-height: 100vh;
+            margin: 0;
+            background: rgba(33, 37, 41, 0.14);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .dialog-shell {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 12px;
+        }
+
+        .dialog-card {
+            width: 100%;
+            max-width: 520px;
+            border: 1px solid #cfd4da;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
+            overflow: hidden;
+        }
+
+        .dialog-titlebar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            background: #f3f4f6;
+            border-bottom: 1px solid #d8dde3;
+        }
+
+        .dialog-titlebar img {
+            max-height: 40px;
+            width: auto;
+        }
+
+        .dialog-titlebar h1 {
+            margin: 0;
+            font-size: 1.05rem;
+            color: #495057;
+        }
+
+        .dialog-body {
+            padding: 22px 22px 18px;
         }
 
         .pwd-input-wrap {
@@ -64,18 +110,14 @@ $safeToken = htmlspecialchars($token, ENT_QUOTES, 'UTF-8');
 </head>
 
 <body>
-    <div class="container mt-4 mb-3">
-        <div class="d-flex align-items-center gap-3 flex-wrap">
-            <img src="mhk_std_logo_transparent 640.png" alt="" style="max-height:72px;width:auto;" />
-            <h1 class="h4 mb-0 text-secondary">Bell Ringing — reset password</h1>
-        </div>
-    </div>
-    <div class="container mt-2">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h2 class="h5 card-title mb-3">Set a new password</h2>
+    <div class="dialog-shell">
+        <div class="dialog-card">
+            <div class="dialog-titlebar">
+                <img src="mhk_std_logo_transparent 640.png" alt="" />
+                <h1>Bell Ringing Password Reset</h1>
+            </div>
+            <div class="dialog-body">
+                <h2 class="h5 card-title mb-3">Set a new password</h2>
                         <?php if ($err !== '') { ?>
                             <div class="alert alert-danger"><?php echo $safeErr; ?></div>
                         <?php } ?>
@@ -104,8 +146,6 @@ $safeToken = htmlspecialchars($token, ENT_QUOTES, 'UTF-8');
                             <p class="text-muted mb-3">This page is opened from the link in your password reset email. If the link expired, request a new one from the Bell Ringing page using <strong>Forgot Password</strong>.</p>
                             <a href="index.html" class="btn btn-primary">Back to Bell Ringing</a>
                         <?php } ?>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
