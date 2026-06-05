@@ -62,7 +62,7 @@
     list ($ret_cd, $msg) = explode("#", checkForSlotConflict($callingRinger, $slot, $dt, $dbh));
     switch ($ret_cd)
     {
-       case "2" : echo "2#Are you sure you want to register for this slot#$cd"; return;
+       case "2" : echo "2#Are you sure you want to select this slot#$cd"; return;
        case "3" : echo "3#You have already registered for another location in this same time period#$cd"; return;
        case "4" : echo "4#A database error has occurred\n $msg#$cd"; return;
        default  : echo "4#HELP  Something is bad\n $msg#$cd"; return;

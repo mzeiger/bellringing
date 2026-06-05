@@ -2,37 +2,186 @@
 
 <!DOCTYPE html>
 
-<?php session_start(); ?>
-
 <html>
 
 
 <style type="text/css">
+
+  :root {
+    --brand-teal: #339999;
+    --brand-teal-dark: #2a7a7a;
+    --brand-red: #c41e3a;
+    --surface: #ffffff;
+    --page-bg: #f4f7f6;
+    --text-muted: #5c6569;
+    --border: #d8dee0;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1);
+    --radius: 10px;
+  }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    color: #2c3335;
+    background: var(--page-bg);
+    padding-top: 52px;
+  }
+
+  .page-main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.25rem 2.5rem;
+  }
+
+  .page-hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 1.75rem 0 1rem;
+    flex-wrap: wrap;
+  }
+
+  .page-hero img {
+    width: 210px;
+    height: auto;
+    flex-shrink: 0;
+  }
+
+  .page-hero h1 {
+    margin: 0;
+    text-align: center;
+    color: var(--brand-red);
+    font-size: clamp(1.35rem, 3.5vw, 2rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+
+  .welcome-card {
+    max-width: 680px;
+    margin: 0 auto 2rem;
+    padding: 1.5rem 1.75rem;
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border-left: 4px solid var(--brand-teal);
+  }
+
+  .welcome-card h3 {
+    margin: 0 0 0.85rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--brand-teal-dark);
+  }
+
+  .welcome-card ul {
+    margin: 0 0 1.25rem;
+    padding-left: 1.35rem;
+    color: var(--text-muted);
+  }
+
+  .welcome-card li {
+    margin-bottom: 0.45rem;
+  }
+
+  .welcome-card li:last-child {
+    margin-bottom: 0;
+  }
+
+  .welcome-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem 1rem;
+    margin: 0;
+    padding-top: 0.25rem;
+  }
+
+  .welcome-action-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .welcome-btn {
+    display: inline-block;
+    padding: 0.55rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: background 0.15s, transform 0.1s;
+  }
+
+  .welcome-btn-primary {
+    background: var(--brand-teal);
+    color: #fff;
+  }
+
+  .welcome-btn-primary:hover {
+    background: var(--brand-teal-dark);
+    color: #fff;
+  }
+
+  .welcome-card a.welcome-btn-primary,
+  .welcome-card a.welcome-btn-primary:hover {
+    color: #fff;
+  }
+
+  .welcome-btn-secondary {
+    background: #fff;
+    color: var(--brand-teal-dark);
+    border: 2px solid var(--brand-teal);
+  }
+
+  .welcome-btn-secondary:hover {
+    background: #eef6f6;
+    color: var(--brand-teal-dark);
+  }
 
   .error    /* This is the jQuery Validate() class for error messages  */
   {
     color: #CC0000;
     font-size: small;
     padding-left: 3px;
-    text-align: : left;
+    text-align: left;
   }
 
-    /* got from website http://jsfiddle.net/HC64Y/11/ */
   input.rounded2
   {
-      border: 1px solid #ccc;
-      -moz-border-radius: 10px;
-      -webkit-border-radius: 10px;
-      border-radius: 10px;
-      -moz-box-shadow: 2px 2px 3px #666;
-      -webkit-box-shadow: 2px 2px 3px #666;
-      box-shadow: 2px 2px 3px #666;
-      font-size: 20px;
-      padding: 4px 7px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: none;
+      font-size: 16px;
+      padding: 0.5rem 0.75rem;
       outline: 0;
       -webkit-appearance: none;
-  	  display: inline-block;
+      display: inline-block;
       width: 250px;
+      transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  input.rounded2:focus {
+      border-color: var(--brand-teal);
+      box-shadow: 0 0 0 3px rgba(51, 153, 153, 0.2);
+  }
+
+  #enrollDialog label,
+  #signInDialog label,
+  #forgotPasswordDialog label {
+      text-align: right;
+      padding-right: 12px;
+      display: inline-block;
+      min-width: 180px;
+      font-weight: 500;
+      color: #3d4548;
+      vertical-align: middle;
   }
 
   label {
@@ -42,13 +191,93 @@
       min-width:200px;
   }
 
+  #enrollDialog form,
+  #signInDialog form,
+  #forgotPasswordDialog form {
+      padding: 0.25rem 0.5rem;
+  }
+
+  #enrollDialog form {
+      padding-left: 1.25rem;
+  }
+
+  #enrollDialog input[type="submit"],
+  #signInDialog input[type="submit"],
+  #forgotPasswordDialog input[type="submit"] {
+      background: var(--brand-teal);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.55rem 1.4rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+  }
+
+  #enrollDialog input[type="submit"]:hover,
+  #signInDialog input[type="submit"]:hover,
+  #forgotPasswordDialog input[type="submit"]:hover {
+      background: var(--brand-teal-dark);
+  }
+
+  #signInDialog #forgotPasswordTrigger {
+      color: var(--brand-teal-dark);
+      font-weight: 500;
+      text-decoration: none;
+      padding: 0.35rem 0;
+  }
+
+  #signInDialog #forgotPasswordTrigger:hover {
+      text-decoration: underline;
+  }
+
+  #forgotPasswordDialog #forgotPasswordEmailInput {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      font-size: 16px;
+      width: 250px;
+  }
+
+  #forgotPasswordDialog #forgotPasswordEmailInput:focus {
+      border-color: var(--brand-teal);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(51, 153, 153, 0.2);
+  }
+
+  .ui-dialog {
+      border-radius: var(--radius) !important;
+      box-shadow: var(--shadow-md) !important;
+      border: none !important;
+      padding: 0;
+      overflow: hidden;
+  }
+
+  .ui-dialog .ui-dialog-titlebar {
+      background: var(--brand-teal) !important;
+      color: #fff !important;
+      border: none !important;
+      border-radius: 0 !important;
+      font-weight: 600;
+      padding: 0.65rem 1rem !important;
+  }
+
+  .ui-dialog .ui-dialog-titlebar-close {
+      color: #fff !important;
+  }
+
+  .ui-dialog .ui-dialog-content {
+      padding: 1.25rem 1.5rem !important;
+  }
+
   .calendarTableLbl
   {
     border-style: solid;
     border-color: #B4886B;
     font-weight: bold;
     display: block;
-    width: 120px;
+    width: 132px;
     height: 25px;
     text-align: center;
     color: green;
@@ -60,11 +289,22 @@
     border-color: #B4886B;
     font-weight: bold;
     display: block;
-    width: 120px;
+    width: 132px;
     height: 25px;
     text-align: center;
     color: red;
   }
+
+.calendarClass td:first-child {
+    white-space: nowrap;
+    min-width: 155px;
+    padding-left: 10px;
+}
+
+.calendarClass td:nth-child(2) {
+    white-space: nowrap;
+    min-width: 120px;
+}
 
 .calendarClass tbody tr:hover
 {
@@ -72,22 +312,93 @@
 }
 
 #header{
-    position:fixed;
-    top:0; left:0;
-    padding : 3px;
-    height:40px;
-    width:100%;
-    background-color: #339999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.75rem;
+    padding: 0.45rem 1rem;
+    min-height: 44px;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: var(--brand-teal);
     color: white;
-    z-index:999;
+    z-index: 999;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
 }
 
 #header a{
-  color:white;
+  color: white;
+  text-decoration: none;
 }
 
 #header span {
   color: white;
+}
+
+#header .header-spacer {
+  flex: 1;
+  min-width: 0.5rem;
+}
+
+#helpButton,
+#showScheduleButton {
+  margin: 0;
+  padding: 0.4rem 0.85rem;
+  border: none;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--brand-teal-dark);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+#helpButton:hover,
+#showScheduleButton:hover {
+  background: #fff;
+}
+
+#signInInfo {
+  color: #fff;
+  font-weight: 500;
+  font-size: 0.9rem;
+  padding: 0.35rem 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+body.logged-out #signInInfo {
+  display: none !important;
+}
+
+body.logged-in #signInInfo {
+  display: inline-block !important;
+}
+
+@media (max-width: 900px) {
+  #signInInfo {
+    flex: 1 1 100%;
+    text-align: left;
+    white-space: normal;
+    word-break: break-word;
+  }
+}
+
+.welcome-card a {
+  color: var(--brand-teal-dark);
+}
+
+.welcome-card a:hover {
+  color: var(--brand-teal);
+}
+
+#allDaysCheckBox {
+  margin-left: 0.25rem;
+  vertical-align: middle;
 }
 
 .infoCursor {
@@ -157,6 +468,9 @@
 
 <head>
 
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.0.5/css/tooltipster.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tooltipster/3.0.5/css/themes/tooltipster-shadow.min.css" />
@@ -187,6 +501,8 @@
 
       function initialize()
       {
+          $("#bellringingYear").text(new Date().getFullYear());
+
           var _resetTokParams = new URLSearchParams(window.location.search);
           var _resetTok = _resetTokParams.get("token");
           if (_resetTok && /^[a-f0-9]{64}$/i.test(_resetTok)) {
@@ -201,6 +517,7 @@
           setForgotPasswordValidate(); // Sets up validation for " Forgot Password form"
           setDialogs(); // Sets up the Sign In and Registration forms as dialogs
           setShowCalendarTrigger(); // Sets the "click" event for the "Show Calendar" anchor  to the showCalander() function
+          $("#calendarDiv").on("click", ".calendarTableLbl", processCalendarClick);
           showResetSuccessMessage();
           wirePasswordToggles();
           $("#phone").mask("000-000-0000")
@@ -218,6 +535,15 @@
           $("#bellringingCalendar").hide(1); // Don't want the "Show Calendar" link to show until after successful sign in
           $("#allDaysSpan").hide(1);
           $("#showSchedule").hide(1);
+          $("body").addClass("logged-out");
+          $("#welcomeEnroll").click(function(e) {
+              e.preventDefault();
+              $("#enrollTrigger").click();
+          });
+          $("#welcomeSignIn").click(function(e) {
+              e.preventDefault();
+              $("#signInTrigger").click();
+          });
           theCookie = $.cookie("MHKBR");
           if (typeof(theCookie) != "undefined")
           {
@@ -408,14 +734,14 @@
       function initializeToolTips()
       {
           //$('.tooltip').tooltipster();  // get ready to use tooltips
-          $('#enrollTrigger').tooltipster(
+          $('#welcomeEnrollHelp').tooltipster(
               {
-              content: $('<span><strong>Click this link to enroll</strong><br/><hr/>You only need to enroll once.</span>')
+              content: $('<span><strong>Click this button to enroll</strong><br/><hr/>You only need to enroll once.</span>')
               }
           );
-          $('#signInTrigger').tooltipster(
+          $('#welcomeSignInHelp').tooltipster(
               {
-              content: $('<span><strong>Click this link to sign in (after enrolling)</strong><br/><hr/>You must sign in with your email and password</span>')
+              content: $('<span><strong>Click this button to sign in (after enrolling)</strong><br/><hr/>You must sign in with your email and password</span>')
               }
           );
           $('#bellringingCalendar').tooltipster(
@@ -530,9 +856,8 @@
 
       function signOut()
       {
-          $("#signInTrigger").show(1);
           $("#signOutTrigger").hide(1);
-          $("#signInInfo").hide(1);
+          $("#signInInfo").text("");
           $("#bellringingCalendar").hide(1);
           $("#allDaysSpan").hide(1);
           $("#calendarDiv").html("");
@@ -542,8 +867,8 @@
               }
           );
           $("#signInFirstWarning").show(1);
-          $("#enrollTrigger").show(1);
           $("#showSchedule").hide(1);
+          $("body").removeClass("logged-in").addClass("logged-out");
       }
 
       function setAccordion() // Sets up the two accordion panes
@@ -666,21 +991,21 @@
 
       function registerResult(data, status)
       {
-          // $("#registerResult").html(data);
-          if (data.substr(0, 1) == 'R') // If registration successful then register.php returns "Registration successful" meaasage
+          if (data.substr(0, 1) == 'R') // register.php returns a message starting with "R" on success
           {
-              // so check if first character is "R"
-              $("#registerResult").html('<p style="color:blue;">' + data + '<p>');
+              $("#enrollDialog").dialog("close");
+              $("#messageDialog").html("Registration Succeeded");
+              $("#messageDialog").dialog("open");
           }
           else
           {
-              $("#registerResult").html('<p style="color:red;">' + data + '<p>'); // If registration not successful then returns "Emails address <xxx> in use
+              $("#registerResult").html('<p style="color:red;">' + data + '<p>'); // e.g. email address already in use
           }
       }
 
       function placeValidationError(error, element)
       {
-          var wrapper = element.closest(".pwd-input-wrap");
+          var wrapper = element.closest(".pwd-input-wrap, .enroll-input-wrap");
           if (wrapper.length) {
               error.insertAfter(wrapper);
           } else {
@@ -752,10 +1077,38 @@
           }
       }
 
+      function parseSignInResponse(data)
+      {
+          if (typeof data === "object" && data !== null) {
+              return data;
+          }
+          if (typeof data !== "string") {
+              return null;
+          }
+          var trimmed = data.trim();
+          if (trimmed.indexOf("Invalid") === 0) {
+              return null;
+          }
+          var jsonStart = trimmed.indexOf("{");
+          if (jsonStart === -1) {
+              return null;
+          }
+          var payload = trimmed.substring(jsonStart);
+          try {
+              return JSON.parse(payload);
+          } catch (e) {
+              try {
+                  return eval("(" + payload + ")");
+              } catch (e2) {
+                  return null;
+              }
+          }
+      }
+
       function signInResult(data, status)
       {
-          var str = data.substr(0, 7);
-          if (str != "Invalid")
+          var rg = parseSignInResponse(data);
+          if (rg && rg.Ringer && rg.Ringer[0])
           {
               // Sign in was good so:
               // - close the dialog
@@ -763,7 +1116,6 @@
               // - put the user id in the "rgr" div for later use in showCalander()
               // - Hide the "Sign in first" warning
               // - show the "Show Calander link on the top of the page
-              var rg = eval("(" + data + ")");
               $("#signInDialog").dialog("close");
               var admin;
               if (rg.Ringer[0].administrator == "1")
@@ -771,21 +1123,27 @@
               else
                   admin = "";
               $("#admin").html(admin);
-              $("#signInInfo").html("Signed in as: " + rg.Ringer[0].fname + " " + rg.Ringer[0].lname + " " + rg.Ringer[0].email + " " + admin);
+              $("#signInInfo").text("Signed in as " + rg.Ringer[0].email);
               $("#rgrid").attr("value", rg.Ringer[0].id);
               $("#bellringingCalendar").show(1);
               $("#allDaysSpan").show(1);
               $("#signInFirstWarning").hide(1);
               $("#signOutTrigger").show(1);
-              $("#signInTrigger").hide(1);
-              $("#signInInfo").show(1);
-              $("#enrollTrigger").hide(1);
               $("#showSchedule").show(1);
+              $("body").removeClass("logged-out").addClass("logged-in");
               showCalendar();
           }
-          else // if sign in not successful then show message in dialog box
+          else if (typeof data === "string" && data.trim().indexOf("Invalid") === 0)
           {
               $("#signInResultNG").html(data);
+          }
+          else if (typeof data === "object" && data && data.error)
+          {
+              $("#signInResultNG").html(data.error);
+          }
+          else
+          {
+              $("#signInResultNG").html("Unexpected sign-in response. Please try again.");
           }
       }
 
@@ -858,9 +1216,47 @@
           $("#calendarDiv").html(data);
           $("#calendarTableId input").addClass("rounded2");
           $("#calendarTableId").addClass("calendarClass");
-          $(".calendarTableLbl").click(processCalendarClick);
           $(".swapIcon").click(setSwapDialog);
           setTipsterForCalendar();
+      }
+
+      function updateCalendarSlot(oldCode, newCode, name)
+      {
+          var $label = $('label[code="' + oldCode + '"]');
+          if ($label.length === 0) {
+              return false;
+          }
+          $label.attr("id", newCode);
+          $label.attr("code", newCode);
+          if (name) {
+              $label.text(name);
+              $label.addClass("calendarTableLblRed");
+          } else {
+              $label.text("");
+              $label.removeClass("calendarTableLblRed");
+          }
+          return true;
+      }
+
+      function applySlotResult(data, status)
+      {
+          var parts = data.split("#");
+          if (parts[0] === "success" && parts.length >= 3) {
+              var oldCode = $("#cd_str").html();
+              if (!updateCalendarSlot(oldCode, parts[2], parts[3] || "")) {
+                  showCalendar();
+              }
+              return;
+          }
+          if (parts[0] === "error") {
+              showCalendar();
+              $("#messageDialog").html(parts.slice(1).join("#"));
+              $("#messageDialog").dialog("open");
+              return;
+          }
+          showCalendar();
+          $("#messageDialog").html(data);
+          $("#messageDialog").dialog("open");
       }
 
       function setSwapDialog()
@@ -1026,16 +1422,12 @@
 
       function remove_result(data, status)
       {
-          showCalendar();
-          $("#messageDialog").html(data);
-          $("#messageDialog").dialog("open");
+          applySlotResult(data, status);
       }
 
       function insert_result(data, status)
       {
-          showCalendar();
-          $("#messageDialog").html(data);
-          $("#messageDialog").dialog("open");
+          applySlotResult(data, status);
       }
 
       function wirePasswordToggle(btnId, inputId) {
@@ -1067,24 +1459,20 @@
 
 </head>
 
-<body>
-    <!--<button id="enrollTrigger">Enroll</button> &nbsp; &nbsp; &nbsp;<button id="signInTrigger">Sign In</button>   -->
+<body class="logged-out">
     <div id="header">
-      <a href="#" target="_self" id="enrollTrigger" style="margin-left: 10px;">Enroll&nbsp;&nbsp;<img src="images/Help-icon.png" alt="?" class="infoCursor" height="25px" width="25px"  /></a>
-      &nbsp; &nbsp; &nbsp;<a href="#" target="_self" id="signInTrigger">Sign In&nbsp;&nbsp;<img src="images/Help-icon.png" alt="?" class="infoCursor" height="25px" width="25px"  /></a>
-      &nbsp; &nbsp; &nbsp;<a href="#" target="_self" id="signOutTrigger" style="display:none">Sign out&nbsp;&nbsp;<img src="images/Help-icon.png" alt="?" class="infoCursor" height="25px" width="25px"  /></a>
-      &nbsp; &nbsp; &nbsp;<a href="#" target ="_self" id="bellringingCalendar" style="display: none;">Refresh calendar&nbsp;&nbsp;<img src="images/Help-icon.png" alt="?" class="infoCursor" height="25px" width="25px"  /></a>
-      &nbsp;&nbsp;
-      <span id="allDaysSpan" class="infoCursor">All Dates&nbsp;&nbsp;<img src="images/Help-icon.png" alt="?" class="infoCursor" height="25px" width="25px"  /><input type="checkbox" id="allDaysCheckBox" style="margin-top: 5px;"/></span>
-      &nbsp; &nbsp; &nbsp;<span id="signInInfo" style="color:DodgerBlue;font-weight:bold;background-color:white;padding:8px;"></span>
-      <span style="float:right;"><button id="helpButton" style="margin: 10px;border-left: 10px;border-top: 10px;">Help</button></span>
-      <span style="float:right;">&nbsp;&nbsp; &nbsp;</span>
-      <img src="images/Help-icon.png" alt="?" class="infoCursor" style="float:right;" id="generalInfo" height="40px" width="40px" style="margin-top: 10px;" />
-      <span style="float:right;">&nbsp;&nbsp; &nbsp;</span>
-      <span id="showSchedule" style="float:right;"><button id="showScheduleButton" style="margin: 10px;border-left: 10px;border-top: 10px;">Show Full Schedule</button></span>
+      <a href="#" target="_self" id="signOutTrigger" style="display:none">Sign out&nbsp;&nbsp;<img src="images/Help-icon.png" alt="?" class="infoCursor" height="22" width="22" /></a>
+      <a href="#" target="_self" id="bellringingCalendar" style="display: none;">Refresh calendar&nbsp;&nbsp;<img src="images/Help-icon.png" alt="?" class="infoCursor" height="22" width="22" /></a>
+      <span id="allDaysSpan" class="infoCursor">All Dates&nbsp;&nbsp;<img src="images/Help-icon.png" alt="?" class="infoCursor" height="22" width="22" /><input type="checkbox" id="allDaysCheckBox" /></span>
+      <span id="signInInfo"></span>
+      <span class="header-spacer"></span>
+      <span id="showSchedule"><button type="button" id="showScheduleButton">Show Full Schedule</button></span>
+      <img src="images/Help-icon.png" alt="?" class="infoCursor" id="generalInfo" height="32" width="32" />
+      <button type="button" id="helpButton">Help</button>
     </div>
 
-    <br/> <br/>
+    <a href="#" id="enrollTrigger" style="display:none" aria-hidden="true"></a>
+    <a href="#" id="signInTrigger" style="display:none" aria-hidden="true"></a>
 
     <!-- The dialogs -->
 
@@ -1122,23 +1510,19 @@
 
       <div id="signInDialog">
         <form action="signin.php" method="post id" id="signInForm">
-            <label for="emailSignIn">Email: </label>&nbsp;
-            <div class="pwd-input-wrap" style="margin-bottom: 10px;">
-                <input type="text" id="emailSignIn" name="emailSignIn" size="30" maxlength="50" class="rounded2"/>
-            </div> <br/>
-            <label for="pwdSignIn">Password: </label>&nbsp;
-            <div class="pwd-input-wrap">
+            <label for="emailSignIn">Email: </label>
+            <span class="enroll-input-wrap"><input type="text" id="emailSignIn" name="emailSignIn" size="30" maxlength="50" class="rounded2"/></span> <br/>
+            <label for="pwdSignIn">Password: </label>
+            <div class="pwd-input-wrap enroll-pwd-wrap">
                 <input type="password" id="pwdSignIn" name="pwdSignIn" size="30" maxlength="20" class="rounded2" />
                 <button type="button" class="pwd-toggle-inside" id="toggleSignInPwd" title="Show password" aria-label="Show password"><i class="bi bi-eye"></i></button>
             </div> <br/>
-            <br/>
-            <label for="cb_remember">Remember Me:&nbsp;</label>
-            &nbsp;<input type="checkbox" id="cb_remember" name="cb_remember" /> <br/>
-
+            <label for="cb_remember">Remember Me:</label>
+            <input type="checkbox" id="cb_remember" name="cb_remember" /> <br/>
             <br/>
             <input type="submit" name="signIn" value="Sign In"/>&nbsp;&nbsp;
-            <img src="images/Help-icon.png" id="signInInfoImg" alt="?" height="40px" width="40px" class="infoCursor" />
-            <a href="#" id="forgotPasswordTrigger" target="_self" style="float:right; padding=5px;">Forgot Password</a>
+            <img src="images/Help-icon.png" id="signInInfoImg" alt="?" height="36" width="36" class="infoCursor" />
+            <a href="#" id="forgotPasswordTrigger" target="_self">Forgot Password</a>
         </form>
         <div style="color: red" id="signInResultNG"></div>
       </div>
@@ -1168,30 +1552,40 @@
       <div id="confirmDialogForRemove"></div>
       <div id="cd_str" style="display: none";></div>
 
-    <!-- start of Accordion -->
+  <main class="page-main">
+      <header class="page-hero">
+          <img src="mhk_std_logo_transparent 640.png" alt="Monument Hill Kiwanis logo" />
+          <h1><span id="bellringingYear"></span> Salvation Army Bellringing Signup</h1>
+      </header>
 
-  <div>
-      <div style="display: flex;flex-direction: row;">
-          <img src="mhk_std_logo_transparent 640.png" width="15%"/>
-          <h1 style="text-align:center;color:red;">2025 Salvation Army Bellringing Signup</h1>
-      </div>
-      <div id="signInFirstWarning" style="font-weight:bold; padding:15px;">
+      <div id="signInFirstWarning" class="welcome-card">
            <h3>Instructions to sign up for a Bell Ringing Slot</h3>
            <ul>
-               <li>Enroll (you only need to do this once) - click on the &quot;Enroll&quot; link in the top left corner</li>
-               <li>After that you can sign in by clicking on the &quot;Sign In&quot; link in the top left corner</li>
-               <li>If you need help at any time let your mouse pointer hover over the  <img src="images/Help-icon.png" alt="?" height="25px" width="25px"/> icon</li>
-               <li>After signing in, to select a time slot, just click on that time slot. To remove yourself from the time slot, click on it again</li>
-               <li>If you have any questions please email Jeff Baker at <a href="mailto:wjeffreybaker@gmail.com">wjeffreybaker@gmail.com</a></li>
-               <li>For problems with this application (i.e. login) please email Mark Zeiger at <a href="mailto:mark.zeiger@gmail.com">mark.zeiger@gmail.com</a></li>
+               <li>Enroll (you only need to do this once) — click the <strong>Enroll</strong> button below</li>
+               <li>After that, sign in with the <strong>Sign In</strong> button below</li>
+               <li>If you need help at any time, hover over the <img src="images/Help-icon.png" alt="?" height="22" width="22"/> icon next to a button or elsewhere on the page</li>
+               <li>After signing in, click an empty time slot to schedule yourself; click your name again to remove yourself</li>
+               <li>Questions? Email Jeff Baker at <a href="mailto:wjeffreybaker@gmail.com">wjeffreybaker@gmail.com</a></li>
+               <li>Login or app problems? Email Mark Zeiger at <a href="mailto:mark.zeiger@gmail.com">mark.zeiger@gmail.com</a></li>
            </ul>
+           <p class="welcome-actions">
+               <span class="welcome-action-item">
+                   <a href="#" class="welcome-btn welcome-btn-primary" id="welcomeEnroll">Enroll</a>
+                   <img src="images/Help-icon.png" alt="?" class="infoCursor" id="welcomeEnrollHelp" height="22" width="22" />
+               </span>
+               <span class="welcome-action-item">
+                   <a href="#" class="welcome-btn welcome-btn-secondary" id="welcomeSignIn">Sign In</a>
+                   <img src="images/Help-icon.png" alt="?" class="infoCursor" id="welcomeSignInHelp" height="22" width="22" />
+               </span>
+           </p>
       </div>
+
       <div id="calendarDiv"></div>
       <form id="hiddenForm">
         <input type="hidden" id="rgrid" value="" name="rgrid">
       </form>
       <div style="display:none;" id="admin"></div>
-  </div>
+  </main>
 
 </body>
 </html>

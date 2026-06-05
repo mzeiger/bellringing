@@ -14,11 +14,12 @@ require_once 'inc/db_connect.php';
       }
       catch (Exception $ex)
       {
-            echo $ex->getMessage();
+            echo "error#" . $ex->getMessage();
             return;
       }
 
-      echo "Removal suceeded";
+      $newCode = sprintf("%s:%s:%s:%s:0", $callingRinger, $slot, $location, $dt);
+      echo "success#Removal suceeded#$newCode#";
       return;
 
 ?>

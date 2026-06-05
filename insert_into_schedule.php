@@ -18,6 +18,6 @@
     }
     else
     {
-        echo "2#Are you sure you want to register for this slot#$cd";
+        echo "2#Are you sure you want to select this slot#$cd";
     }
 ?>

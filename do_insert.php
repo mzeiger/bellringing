@@ -15,12 +15,17 @@ require_once 'inc/db_connect.php';
   }
   catch (Exception $ex)
   {
-        $msg = $ex->getMessage();
-        echo "Sorry but this slot must have been recently selected";
+        echo "error#Sorry but this slot must have been recently selected";
         return;
   }
 
-  echo "Registration suceeded";
+  $nameSql = "select fname, lname from ringers where id = ?";
+  $nameQuery = $dbh->prepare($nameSql);
+  $nameQuery->execute(array($callingRinger));
+  $ringer = $nameQuery->fetch(PDO::FETCH_ASSOC);
+  $name = $ringer["fname"] . " " . $ringer["lname"];
+  $newCode = sprintf("%s:%s:%s:%s:%s", $callingRinger, $slot, $location, $dt, $callingRinger);
+  echo "success#Registration suceeded#$newCode#$name";
   return;
 
 ?>

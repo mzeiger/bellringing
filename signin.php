@@ -56,7 +56,8 @@
     $ringer->lname = $row["lname"];
     $ringer->email = $row["email"];
     $ringer->administrator = $row["administrator"];
-    echo "{Ringer: [" . json_encode($ringer) . "]}";
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(array('Ringer' => array($ringer)));
     return;
   }
   catch (Exception $ex)

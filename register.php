@@ -12,16 +12,16 @@ require_once 'inc/db_connect.php';
 
  try
   {
-    $sql = "insert into ringers (fname, lname, email, password, phone) values (?, ?, ?, ?, ?)";
+    $sql = "insert into ringers (fname, lname, email, password, phone, Comments) values (?, ?, ?, ?, ?, ?)";
 
     $query = $dbh->prepare($sql);
-    $query->execute(array($fname, $lname, $email, $hashed_pwd, $phone));
+    $query->execute(array($fname, $lname, $email, $hashed_pwd, $phone, ""));
   }
   catch (Exception $ex)
   {
         echo "Email address <em><u>" . $email . "</u></em> is in use";
         return;
   }
-      echo "Registration suceeded";
+      echo "Registration succeeded";
       return;
 ?>
