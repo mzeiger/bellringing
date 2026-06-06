@@ -7,7 +7,7 @@
 return [
     'from' => [
         'name' => 'Monument Hill Kiwanis Bell Ringing',
-        'address' => 'noreply@monumenthillkiwanis.org',
+        'address' => 'noreply-bellringing@monumenthillkiwanis.org',
     ],
     'smtp' => [
         'enabled' => false,

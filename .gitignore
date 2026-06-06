@@ -1,5 +1,8 @@
 inc/.env
-password_reset_local.override.php
+inc/pusher_config.php
 reset_mail_config.php
+password_reset_local.override.php
 vendor/
-vendor/
+error_log
+*.log
+

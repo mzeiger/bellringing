@@ -5,8 +5,24 @@ declare(strict_types=1);
 /**
  * Sends plain-text password reset mail.
  * Uses PHPMailer + SMTP if reset_mail_config.php enables it and PHPMailer exists,
- * otherwise uses PHP mail().
+ * otherwise uses PHP mail() with a domain-valid From address.
  */
+function password_reset_default_from_address(): string
+{
+    $host = strtolower((string) ($_SERVER['HTTP_HOST'] ?? ''));
+    $host = preg_replace('/:\d+$/', '', $host) ?? $host;
+
+    if ($host !== '' && $host !== 'localhost' && !str_starts_with($host, '127.')) {
+        if (str_ends_with($host, 'monumenthillkiwanis.org') || str_ends_with($host, 'mhkiwanis.org')) {
+            return 'noreply-bellringing@monumenthillkiwanis.org';
+        }
+
+        return 'noreply@' . $host;
+    }
+
+    return 'noreply-bellringing@monumenthillkiwanis.org';
+}
+
 function password_reset_send_mail(string $toEmail, string $subject, string $plainBody): bool
 {
     $configPath = __DIR__ . '/reset_mail_config.php';
@@ -15,7 +31,10 @@ function password_reset_send_mail(string $toEmail, string $subject, string $plai
         $config = [];
     }
 
-    $fromAddr = $config['from']['address'] ?? 'noreply@localhost';
+    $fromAddr = trim((string) ($config['from']['address'] ?? ''));
+    if ($fromAddr === '' || str_ends_with(strtolower($fromAddr), '@localhost')) {
+        $fromAddr = password_reset_default_from_address();
+    }
     $fromName = $config['from']['name'] ?? 'Bell Ringing';
     $smtp = $config['smtp'] ?? [];
     $smtpOn = !empty($smtp['enabled']);
@@ -56,11 +75,24 @@ function password_reset_send_mail(string $toEmail, string $subject, string $plai
     }
 
     $fromHeader = sprintf('%s <%s>', $fromName, $fromAddr);
-    $headers = "MIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8\r\nFrom: {$fromHeader}\r\n";
+    $headers = "MIME-Version: 1.0\r\n"
+        . "Content-Type: text/plain; charset=UTF-8\r\n"
+        . "From: {$fromHeader}\r\n"
+        . "Reply-To: {$fromHeader}\r\n";
 
-    $sent = @mail($toEmail, $subject, $plainBody, $headers);
+    $additionalParams = '';
+    if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
+        $additionalParams = '-f' . $fromAddr;
+    }
+
+    $sent = $additionalParams !== ''
+        ? @mail($toEmail, $subject, $plainBody, $headers, $additionalParams)
+        : @mail($toEmail, $subject, $plainBody, $headers);
+
     if (!$sent) {
-        error_log('password_reset_send_mail: PHP mail() failed for ' . $toEmail);
+        error_log('password_reset_send_mail: PHP mail() failed for ' . $toEmail . ' (From: ' . $fromAddr . ')');
+    } else {
+        error_log('password_reset_send_mail: sent reset mail to ' . $toEmail . ' (From: ' . $fromAddr . ')');
     }
 
     return $sent;

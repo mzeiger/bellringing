@@ -65,7 +65,7 @@ try {
     ]);
     $dbh->prepare('DELETE FROM password_reset_token WHERE ringer_id = :id')->execute([':id' => $ringerId]);
 
-    header('Location: index.html?reset=1');
+    header('Location: index.php?reset=1');
     exit;
 } catch (Throwable $e) {
     error_log('password_reset_complete: ' . $e->getMessage());

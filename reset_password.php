@@ -140,11 +140,11 @@ $safeToken = htmlspecialchars($token, ENT_QUOTES, 'UTF-8');
                                     </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary">Save password</button>
-                                <a href="index.html" class="btn btn-link">Cancel</a>
+                                <a href="index.php" class="btn btn-link">Cancel</a>
                             </form>
                         <?php } else { ?>
                             <p class="text-muted mb-3">This page is opened from the link in your password reset email. If the link expired, request a new one from the Bell Ringing page using <strong>Forgot Password</strong>.</p>
-                            <a href="index.html" class="btn btn-primary">Back to Bell Ringing</a>
+                            <a href="index.php" class="btn btn-primary">Back to Bell Ringing</a>
                         <?php } ?>
             </div>
         </div>

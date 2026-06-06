@@ -1,10 +1,12 @@
 <?php
 
     $cd = $_POST["code"];
+    $oldCode = $cd;
 
     list($callingRinger, $slot, $location, $dt, $scheduledRinger) = explode(":", $cd);
 
 require_once 'inc/db_connect.php';
+require_once 'inc/pusher_notify.php';
 
  try
   {
@@ -25,6 +27,8 @@ require_once 'inc/db_connect.php';
   $ringer = $nameQuery->fetch(PDO::FETCH_ASSOC);
   $name = $ringer["fname"] . " " . $ringer["lname"];
   $newCode = sprintf("%s:%s:%s:%s:%s", $callingRinger, $slot, $location, $dt, $callingRinger);
+  $socketId = isset($_POST['socket_id']) ? trim($_POST['socket_id']) : null;
+  notifyScheduleChange($oldCode, $newCode, $name, $callingRinger, $socketId);
   echo "success#Registration suceeded#$newCode#$name";
   return;
 
